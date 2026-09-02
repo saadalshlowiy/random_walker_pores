@@ -1,0 +1,119 @@
+$ pip install cupy
+Collecting cupy
+  Downloading cupy-14.2.0.tar.gz (4.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.1/4.1 MB 467.0 kB/s eta 0:00:00
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... error
+  error: subprocess-exited-with-error
+  
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [76 lines of output]
+      Generating CUPY_CACHE_KEY from header files...
+      CUPY_CACHE_KEY (2013 files matching /tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/**): 87417f5ddafec4c853dab1863f8bb308dafc152c
+      
+      -------- Configuring Module: cuda --------
+      /tmp/tmp4h9_nf1r/a.cpp:1:10: fatal error: cublas_v2.h: No such file or directory
+          1 | #include <cublas_v2.h>
+            |          ^~~~~~~~~~~~~
+      compilation terminated.
+      Command '['x86_64-linux-gnu-g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O2', '-Wall', '-fPIC', '-D_FORCE_INLINES=1', '-DCYTHON_EXTERN_C=extern "C"', '-DNPY_TARGET_VERSION=NPY_2_0_API_VERSION', '-DCUPY_CACHE_KEY=87417f5ddafec4c853dab1863f8bb308dafc152c', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/libcudacxx', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/thrust', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/cub', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include', '-I/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/numpy/_core/include', '-c', '/tmp/tmp4h9_nf1r/a.cpp', '-o', '/tmp/tmp4h9_nf1r/tmp/tmp4h9_nf1r/a.o', '-std=c++17']' returned non-zero exit status 1.
+      /tmp/tmpqluma6zx/a.cpp:2:18: fatal error: cuda_runtime_api.h: No such file or directory
+          2 |         #include <cuda_runtime_api.h>
+            |                  ^~~~~~~~~~~~~~~~~~~~
+      compilation terminated.
+      **************************************************
+      *** WARNING: Cannot check compute capability
+      Command '['x86_64-linux-gnu-g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O2', '-Wall', '-fPIC', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/libcudacxx', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/thrust', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/cub', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include', '-I/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/numpy/_core/include', '-c', '/tmp/tmpqluma6zx/a.cpp', '-o', '/tmp/tmpqluma6zx/tmp/tmpqluma6zx/a.o', '-std=c++17']' returned non-zero exit status 1.
+      **************************************************
+      
+      ************************************************************
+      * CuPy Configuration Summary                               *
+      ************************************************************
+      
+      Build Environment:
+        Include directories: ['/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/libcudacxx', '/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/thrust', '/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/cub', '/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include', '/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/numpy/_core/include']
+        Library directories: []
+        nvcc command       : (not found)
+        hipcc command      : (not found)
+      
+      Environment Variables:
+        CFLAGS          : (none)
+        LDFLAGS         : (none)
+        LIBRARY_PATH    : (none)
+        CUDA_PATH       : (none)
+        NVCC            : (none)
+        HIPCC           : (none)
+        ROCM_HOME       : (none)
+      
+      Modules:
+        cuda      : No
+          -> Include files not found: ['cublas_v2.h', 'cuda.h', 'cuda_profiler_api.h', 'cuda_runtime.h', 'cufft.h', 'curand.h', 'cusparse.h']
+          -> Check your CFLAGS environment variable.
+      
+      ERROR: CUDA could not be found on your system.
+      
+      HINT: You are trying to build CuPy from source, which is NOT recommended for general use.
+            Please consider using binary packages instead.
+      
+      Please refer to the Installation Guide for details:
+      https://docs.cupy.dev/en/stable/install.html
+      
+      ************************************************************
+      
+      Traceback (most recent call last):
+        File "/home/saad/Desktop/programs/slb/tmp/my_env/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+          main()
+        File "/home/saad/Desktop/programs/slb/tmp/my_env/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/saad/Desktop/programs/slb/tmp/my_env/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 118, in get_requires_for_build_wheel
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
+          self.run_setup()
+        File "/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())  # noqa: S102 # exec is intentional here
+          ^^^^^^^^^^^^^^^^^^^^
+        File "<string>", line 56, in <module>
+        File "/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/install/cupy_builder/cupy_setup_build.py", line 560, in get_ext_modules
+          extensions = make_extensions(ctx, compiler, use_cython)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/install/cupy_builder/cupy_setup_build.py", line 412, in make_extensions
+          raise Exception('Your CUDA environment is invalid. '
+      Exception: Your CUDA environment is invalid. Please check above error log.
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─> See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(my_env) saad@saad-Zenbook-UX3402ZA-UX3402ZA:~/Desktop/programs/slb/tmp$ lspci -k | grep -EA3 'VGA|3D|Display'
+00:02.0 VGA compatible controller: Intel Corporation Alder Lake-P GT2 [Iris Xe Graphics] (rev 0c)
+	DeviceName: Onboard - Video
+	Subsystem: ASUSTeK Computer Inc. Alder Lake-P GT2 [Iris Xe Graphics]
+	Kernel driver in use: i915
+(my_env) saad@saad-Zenbook-UX3402ZA-UX3402ZA:~/Desktop/programs/slb/tmp$ 
+
