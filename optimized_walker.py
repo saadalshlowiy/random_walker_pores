@@ -5,13 +5,12 @@ from PIL import Image , ImageSequence
 import matplotlib.pyplot as plt
 
 
-initial_population_walkers = 10000
-current_live_walkers = initial_population_walkers
-placed_walkers = 0
+
+
 # it is much smaller, depending on the resolution of micro-ct
 RESOLUTION = 0.2  # let the lenght of the pixcel be 2 micro-meter
 
-step_distance = RESOLUTION * 100.2  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
+step_distance = RESOLUTION  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
 fluid_diffusion_coefficient = 2.5e3 # micro meter^2 / second
 surface_relaxivity = 20  # micro-meter/second
 
@@ -176,21 +175,32 @@ def convert_index_to_mid_point_position(index):
     return (r , c , z)
 
 
-def get_initiated_walkers(full_array , initial_number_of_walkers):
+def get_initiated_walkers(full_array):
     pores_indexes = get_indexes_of_pore_from_3D_array(full_array)
     number_of_pores = len(pores_indexes)
     walker_data = []
+    #print(f"number of walkers should me {number_of_pores}")
+    #time.sleep(10)
 
-    for i in range(initial_number_of_walkers):
-        # first , for this wakler , we need to find a random PORE
-        #     1      we randomly PICK a pore
-        i = int(np.random.default_rng().random() * number_of_pores)
-        index = pores_indexes[i]
+    # number of walkers should me 523,305
+    # we converted (60, 59, 9) to (60.5, 59.5, 9.5, 1) for walker[0]
+    # we converted (51, 55, 10) to (51.5, 55.5, 10.5, 1) for walker[1]
+    # we converted (51, 56, 10) to (51.5, 56.5, 10.5, 1) for walker[2]
+    # we converted (51, 57, 10) to (51.5, 57.5, 10.5, 1) for walker[3]
+    # we converted (51, 58, 10) to (51.5, 58.5, 10.5, 1) for walker[4]
+    # we converted (51, 59, 10) to (51.5, 59.5, 10.5, 1) for walker[5]
+    # we converted (51, 60, 10) to (51.5, 60.5, 10.5, 1) for walker[6]
+    # we converted (51, 61, 10) to (51.5, 61.5, 10.5, 1) for walker[7]
+    #
+    # we loop through every PORE , we put ONE walker it in ...
+    for i in range(number_of_pores):
 
+        index = pores_indexes[i] # we will get the first pore's pixcel , then second ..
         # 2 we calculate the MIDDLE POSITION OF THIS PORE (4 , 5 , 8) --> (4.5 , 5.5 , 8.5)
-        position_for_uninitialized_walker = convert_index_to_mid_point_position(index) + (1,)      # so now it is like this (x , y , z , is_alive)
-
+        position_for_uninitialized_walker = convert_index_to_mid_point_position(index) + (1,)  # so now it is like this (x , y , z , is_alive)
+     #   print(f"we converted {index} to {position_for_uninitialized_walker} for walker[{i}]")
         walker_data.append(position_for_uninitialized_walker)
+
 
 
     return walker_data
@@ -243,9 +253,10 @@ def semi_main():
 
 
      # now it looks like this ( X Y Z w )    w = 0 , 1
-    walker_data = np.array(get_initiated_walkers(full_array , initial_population_walkers ))
+    walker_data = np.array(get_initiated_walkers(full_array ))
 
-
+    seed = 99
+    rng = np.random.default_rng(seed)
 
 
     # now start the simulation
@@ -254,7 +265,9 @@ def semi_main():
     global current_live_walkers
 
     global p_fraction
-
+    current_live_walkers = len(walker_data)
+    global initial_population_walkers
+    initial_population_walkers = len(walker_data)
     t = 0
 
     delta_t = calculate_increment_time(step_distance ,fluid_diffusion_coefficient)
@@ -285,21 +298,15 @@ def semi_main():
 
            # theta  = np.ones(len(walker_data))  # [ th , th , th ... th ]
             #beta   = np.ones(len(walker_data))  # [ be , be , be ... be
-            theta =  np.random.default_rng().random( len(walker_data) ) * math.pi * 2
-            beta  =  np.random.default_rng().random( len(walker_data) ) * math.pi
+            theta =  np.random.default_rng(seed).random( len(walker_data) ) * math.pi * 2
+            beta  =  np.random.default_rng(seed).random( len(walker_data) ) * math.pi
         # WE EXTRACT X Y Z SEPRATELY
 
             nr =  r + (step_distance * np.sin(beta) * np.cos(theta))
             nc =  c + (step_distance * np.sin(beta) * np.cos(theta))
             nz =  z + ( step_distance * np.cos(beta) )
+            number_of_negitive_values = len(nr[nr < 0 ]) + len(nc[nc < 0 ]) + len(nz[nz < 0 ])
             new_walker_data = np.column_stack((nr , nc , nz , is_alive))
-            #if nr < 0 or nc < 0 or nz < 0 :
-            #    print(f"new position is negitive")
-            #r=round(np.random.default_rng().random() , 2)
-            #if r  > 0.89 :
-
-             #   print(f"{jj}|~{r}~ new position calculated ({x} {y} {z}) --> ({nx} {ny} {nz})...")
-              #  time.sleep(0.25)
 
             converted_to_index_new_walker_data = new_walker_data // 1       # from POSITION --> Index
 
@@ -310,7 +317,7 @@ def semi_main():
                # print(f"walker has HIT a grain , now calculating if it is dead.......?")
                 #time.sleep(0.5)
             likely = np.ones(len(collided)) * ( 2 * step_distance * surface_relaxivity / (3 *fluid_diffusion_coefficient ) )
-            random_number = np.random.default_rng().random(size = len(collided))
+            random_number = np.random.default_rng(seed).random(size = len(collided))
             is_dead = random_number > likely ## if random number > likely    then DEAD      # output is [ False , True , False ..... etc ]
 
                     #print("walker dead!!!!")
@@ -318,6 +325,9 @@ def semi_main():
 
             ## O(n) ... we need to loop Through the entire set , to update ..
             # i do not know if we can do it , with just a if else statement on np.array
+
+
+
             number_of_dead_in_this_bach = update_walker_state(walker_data , new_walker_data  , is_dead , collided )
 
             current_live_walkers = current_live_walkers - number_of_dead_in_this_bach
@@ -339,7 +349,7 @@ def semi_main():
 
 
             bbb = time.time()
-            print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa}")
+            print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa} ||negitive : {number_of_negitive_values}")
 
             # is_alive = 1 :: for being alive      is_alive = 0 for being dead
 
@@ -357,13 +367,137 @@ def semi_main():
 
 
 
+def semi_semi_main():
+    # initialize walkers then store them
+    full_array =  get_array_from_3D_image()
+
+
+     # now it looks like this ( X Y Z w )    w = 0 , 1
+    walker_data = np.array(get_initiated_walkers(full_array ))
+
+    seed = 99
+
+
+
+    # now start the simulation
+
+    #(1) first we increment the time
+    global current_live_walkers
+
+    global p_fraction
+    current_live_walkers = len(walker_data)
+    global initial_population_walkers
+    initial_population_walkers = len(walker_data)
+    t = 0
+
+    delta_t = calculate_increment_time(step_distance ,fluid_diffusion_coefficient)
+
+    interations = 2500
+    p_fraction = []
+
+    start = time.time()
+    for jj in range(interations):
+
+
+        # we are iterating through each WALKER
+        # every thread has this in their private domain, each process will count how many walkers died !
+
+
+            # if this walker DIED , then skip iteration
+
+
+
+
+            aaa = time.time()
+
+            r = walker_data[: , 0]
+            c = walker_data[: , 1]
+            z = walker_data[: , 2]
+            is_alive =  walker_data[: , 3]
+
+
+           # theta  = np.ones(len(walker_data))  # [ th , th , th ... th ]
+            #beta   = np.ones(len(walker_data))  # [ be , be , be ... be
+            theta =  np.random.default_rng(seed).random( len(walker_data) ) * math.pi * 2
+            beta  =  np.random.default_rng(seed).random( len(walker_data) ) * math.pi
+        # WE EXTRACT X Y Z SEPRATELY
+
+            nr =  r + (step_distance * np.sin(beta) * np.cos(theta))
+            nc =  c + (step_distance * np.sin(beta) * np.cos(theta))
+            nz =  z + ( step_distance * np.cos(beta) )
+            number_of_negitive_values = len(nr[nr < 0 ]) + len(nc[nc < 0 ]) + len(nz[nz < 0 ])
+            new_walker_data = np.column_stack((nr , nc , nz , is_alive))
+
+            converted_to_index_new_walker_data = new_walker_data // 1       # from POSITION --> Index
+
+            collided = return_collided_walkers(converted_to_index_new_walker_data , full_array)
+
+
+            # IF IT IN TOUCHING OR BEHOND THE GRAIN, WE CALCULATE TEH LIKELY
+            likely = np.ones(len(collided)) * ( 2 * step_distance * surface_relaxivity / (3 *fluid_diffusion_coefficient ) )
+            random_number = np.random.default_rng(seed).random(size = len(collided))
+            is_dead = random_number > likely ## if random number > likely    then DEAD      # output is [ False , True , False ..... etc ]
+
+                    #print("walker dead!!!!")
+
+
+            ## O(n) ... we need to loop Through the entire set , to update ..
+            # i do not know if we can do it , with just a if else statement on np.array
+
+            ## IF THERE IS NO COLLISION , THEN r <- nr
+            r[collided == 0] = nr[collided == 0 ]
+            c[collided == 0] = nc[collided == 0 ]
+            z[collided == 0] = nz[collided == 0 ]
+
+            ## IF THERE IS COLLISION AND DEAD , THEN is_alive=0
+            before_killing = np.sum(is_alive)
+            is_alive[(is_dead == 1) & (collided == 1)] = 0
+            after_killing = np.sum(is_alive)
+
+
+            number_of_dead_in_this_bach = before_killing - after_killing
+            current_live_walkers = current_live_walkers - number_of_dead_in_this_bach
+
+
+
+
+            fraction = current_live_walkers / initial_population_walkers # p(t) =  N_1 / N_o
+
+            t = t + delta_t
+
+
+
+            if current_live_walkers == 0 :
+                break
+
+
+            p_fraction.append((fraction,t))
+
+
+            bbb = time.time()
+            print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa} ||negitive : {number_of_negitive_values}")
+
+            # is_alive = 1 :: for being alive      is_alive = 0 for being dead
+
+
+
+
+    end = time.time()
+
+    print(f"\n\n\nOVERALL TIME {end - start} ")
+    print(f"final time that is going to anaylitical approach is {t}")
+    coordinates = analytical_approach(surface_relaxivity , t , RADIUS_IN_MICRO_METERS, interations )
+
+    print(f"\n\n\nSTEP DISTANCE USED IS {step_distance/RESOLUTION} X L")
+    surface_relaxation(p_fraction, coordinates)
+
 
 def main():
     # initialize walkers then store them
     full_array =  get_array_from_3D_image()
 
      # now it looks like this ( X Y Z w )    w = 0 , 1
-    walker_data = np.array(get_initiated_walkers(full_array , initial_population_walkers ))
+    walker_data = np.array(get_initiated_walkers(full_array ))
 
 
 
@@ -456,8 +590,10 @@ def main():
     print(f"\n\n\nSTEP DISTANCE USED IS {step_distance/RESOLUTION} X L")
     surface_relaxation(p_fraction, coordinates)
 
+semi_semi_main();
 
-semi_main() ;print("semi main()")
+
+#semi_main() ;print("semi main()")
 
 
 #main()

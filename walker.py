@@ -266,6 +266,26 @@ def main():
 main()
 
 
+def get_initiated_walkers(full_array , initial_number_of_walkers):
+    pores_indexes = get_indexes_of_pore_from_3D_array(full_array)
+    number_of_pores = len(pores_indexes)
+    walker_data = []
+    print(f"number of walkers should me {number_of_pores}")
+    time.sleep(10)
+
+    for i in range(initial_number_of_walkers):
+        # first , for this wakler , we need to find a random PORE
+        #     1      we randomly PICK a pore
+        i = int(np.random.default_rng().random() * number_of_pores)
+        index = pores_indexes[i]
+
+        # 2 we calculate the MIDDLE POSITION OF THIS PORE (4 , 5 , 8) --> (4.5 , 5.5 , 8.5)
+        position_for_uninitialized_walker = convert_index_to_mid_point_position(index) + (1,)      # so now it is like this (x , y , z , is_alive)
+
+        walker_data.append(position_for_uninitialized_walker)
+
+
+    return walker_data
 
 
 

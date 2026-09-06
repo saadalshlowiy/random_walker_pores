@@ -40,7 +40,7 @@ def analytical_approach(surface_relaxivity=20 , final_time=0.00001 , radius_in_m
     plt.show()
 
     return 0
-analytical_approach()
+
 
 
 
@@ -135,6 +135,20 @@ def return_collided_walkers(converted_to_index_new_walker_data , full_array) :
 
             return is_collision
 
+def action_no_collision(tu):
+
+    tu[:][0] = tu[:][4]   # Old => new
+    tu[:][1] = tu[:][5]  # Old => new
+    tu[:][2] = tu[:][6] # Old => new
+    return tu
+
+def action_collision_and_dead(tu):
+    tu[:][3] = 0
+    return tu
+
+def action_collision_and_live(tu):
+    return tu
+
 def update_walker_state(walker_data , new_walker_data  , is_dead , collided ) :
 
 
@@ -143,12 +157,32 @@ def update_walker_state(walker_data , new_walker_data  , is_dead , collided ) :
         print(f"w:{walker_data}\nNW:{new_walker_data}\n isdead:{is_dead}\ncollided: {collided}")
 
         all_in_one = np.column_stack((walker_data , new_walker_data  , is_dead , collided))
-        # format is as follows :--> (r , c , z , is_alive , nr , nc , nz , is_alive , collide , dead)
+        # format is as follows :--> [ (r , c , z , is_alive , nr , nc , nz , is_alive , collide , is_dead) ... ]
 
-        if all_in_one[:][8] == 0 : #  no collision
-            all_in_one[:]
+        groups = [
+            all_in_one[:][8] == 0 ,  # this group did not collide into a grain --> update position
+            (all_in_one[:][8] == 1) & (all_in_one[:][-1] == True),  # this group collided and died --> mark it as ZERO -> is_alive
+            (all_in_one[:][8] == 1) & (all_in_one[:][-1] == False) # collided and did not die --> do not change it position !
+        ]
 
+        action = [
+            action_no_collision ,
+            action_collision_and_dead ,
+            action_collision_and_live
+        ]
+
+
+        new_updated_all_in_one = np.piecewise(all_in_one , groups , action)
+
+
+        print(f"new updated {new_updated_all_in_one}")
         time.sleep(15)
+
+
+
+
+
+
         for i in range(len(is_dead)):
 
             # if there is no collision
@@ -240,10 +274,7 @@ def x():
             p_fraction.append((fraction,t))  # storing( p(t) , t )
             print(f"T:{t} || F:{fraction}")
 
-
-#x()
-
-
+x()
 def main():
     # initialize walkers then store them
     full_array =  get_array_from_3D_image()

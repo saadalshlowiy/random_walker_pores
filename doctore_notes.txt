@@ -1,0 +1,25 @@
+# notes from the doctore
+
+<+> the number of walkers == the number of poxecls , where each poxcel has ONE walker
+< - > what you did , is given N walkers , randomly pick a poxcel .
+
+<+> you get negitive numbers for nr , nc , nz ... fix it
+
+<+> s = 1 * L     not  0.2 * L
+
+<+> set a seed(99)
+
+
+<?> he also explain about local coordinates of a walker and global .. i do not know what is the relavence when i told him that i encounter negitive numbers ..
+but i understood it ..
+    if a pixcel is 2nm .. then x is [0..2] and y is [0..2]
+    and a walker is like (1.54 , 1.98) in local , but in global
+    we need to find index of pixcel -> maybe (45,91) , then add it to
+    local to have result of (46.54 , 92.98)
+
+
+    but i am doing it as global . so a walker is (46.54 , 92.98)  and to find
+    its pixcel , we do floor to get (46 , 92)
+
+    but the question still remains , why do we get values like
+    these (-3 , -122)
