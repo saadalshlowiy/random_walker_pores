@@ -11,13 +11,13 @@ placed_walkers = 0
 # it is much smaller, depending on the resolution of micro-ct
 RESOLUTION = 0.2  # let the lenght of the pixcel be 2 micro-meter
 
-step_distance = RESOLUTION * 0.2  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
+step_distance = RESOLUTION * 100.2  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
 fluid_diffusion_coefficient = 2.5e3 # micro meter^2 / second
 surface_relaxivity = 20  # micro-meter/second
 
 
 
-RADIUS = 50 # pixcels given from doctor 
+RADIUS = 50 # pixcels given from doctor
 
 RADIUS_IN_MICRO_METERS = RADIUS * RESOLUTION
 
@@ -259,7 +259,7 @@ def semi_main():
 
     delta_t = calculate_increment_time(step_distance ,fluid_diffusion_coefficient)
 
-    interations = 1200
+    interations = 7500
     p_fraction = []
 
     start = time.time()
@@ -379,7 +379,7 @@ def main():
 
     delta_t = calculate_increment_time(step_distance ,fluid_diffusion_coefficient)
 
-    interations = 1200
+    interations = 7200
     p_fraction = []
 
     start = time.time()
@@ -457,6 +457,8 @@ def main():
     surface_relaxation(p_fraction, coordinates)
 
 
-semi_main()
+semi_main() ;print("semi main()")
+
 
 #main()
+#print("main()")

@@ -12,7 +12,7 @@ placed_walkers = 0
 # it is much smaller, depending on the resolution of micro-ct
 RESOLUTION = 0.2  # let the lenght of the pixcel be 2 micro-meter
 
-step_distance = RESOLUTION * 9.2  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
+step_distance = RESOLUTION * 0.2  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
 fluid_diffusion_coefficient = 2.5e3 # micro meter^2 / second
 surface_relaxivity = 20  # micro-meter/second
 
@@ -264,3 +264,13 @@ def main():
 
 
 main()
+
+
+
+
+
+#7453|T=1.6824174933332785 | F=1e-05
+#7454|T=1.6826431999999452 | F=1e-05
+#7455|T=1.6828689066666118 | F=1e-05
+#STEP DISTANCE USED IS 9.2 X L
+#NOW printing the surface relaxation...
