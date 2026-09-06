@@ -1,11 +1,9 @@
 ## constants
 from math import *
-import numpy as np
-from PIL import Image , ImageSequence
+
 import matplotlib.pyplot as plt
-
-
-
+import numpy as np
+from PIL import Image, ImageSequence
 
 # it is much smaller, depending on the resolution of micro-ct
 RESOLUTION = 0.2  # let the lenght of the pixcel be 2 micro-meter
@@ -26,12 +24,19 @@ def analytical_approach(surface_relaxivity , final_time , radius_in_micro_meter,
     # this method is used as a benshmark towards the simulation ...
     t = np.linspace(0 , final_time ,iterations )
 
-    y =  ((-3 * t * surface_relaxivity) / radius_in_micro_meter )
+    y =  np.exp((-3 * t * surface_relaxivity) / radius_in_micro_meter )
 
-    #y = [math.exp(e) for e in y]
-    # SINCE WE ARE TAKING THE LOG() OF IT , THEN NOO NEED TO TAKE EXP()
-    return (t , y )
 
+
+    print(f"this is the value of y\nnumbers:{len(y)}\nmin:{ np.min(y) }\nmax:{ np.max(y)} " )
+    ## this is output ##
+    # this is the value of y
+    #numbers:100
+    #min:0.9984012793176064
+    #max:1.0
+
+
+    return (t , y)
 
 
 def temp_sin(delta):
@@ -81,8 +86,8 @@ def surface_relaxation_for_simulation(p_t):
     for i in range(number_of_elements):
         (ratio , time) = p_t[i]
         x[i] = time
-        y[i] =  math.log(ratio)
-        #y[i] =  ratio
+        #y[i] =  math.log(ratio)
+        y[i] =  ratio
         #print(f"x:{time} || y:{ratio}")
 
 
@@ -156,6 +161,8 @@ def is_collision(position, full_array):
     return is_index_in_grain(index , full_array)
 # from 0 to 2_pi
 import math
+
+
 def random_theta():
     theta = np.random.default_rng().random() * math.pi * 2
     return theta
@@ -166,6 +173,7 @@ def random_beta():
     return beta
 
 import time
+
 
 def convert_index_to_mid_point_position(index):
     (r , c , z) = index
@@ -366,14 +374,19 @@ def semi_main():
     surface_relaxation(p_fraction, coordinates)
 
 
+# the walkers that have is_alive = 1 , are kept .. the others are gone !
+def garbage_clear_for_walker_data(walker_data):
+    return walker_data[walker_data.T[-1] == 1 ]
 
 def semi_semi_main():
-    # initialize walkers then store them
+    # get the image , and store it in np_array
     full_array =  get_array_from_3D_image()
 
 
-     # now it looks like this ( X Y Z w )    w = 0 , 1
+     # now it looks like this ( r , c , z , is_alive=1 )
     walker_data = np.array(get_initiated_walkers(full_array ))
+
+    ## potiential improvement here is to Dynamically re-size array to shorten it
 
     seed = 99
 
@@ -381,7 +394,7 @@ def semi_semi_main():
 
     # now start the simulation
 
-    #(1) first we increment the time
+
     global current_live_walkers
 
     global p_fraction
@@ -391,91 +404,76 @@ def semi_semi_main():
     t = 0
 
     delta_t = calculate_increment_time(step_distance ,fluid_diffusion_coefficient)
-
-    interations = 2500
+    # should be 900 iterations
+    interations = 100
     p_fraction = []
 
     start = time.time()
     for jj in range(interations):
+        # every 100 iterations , we should erase all the zombie walkers
+        if jj % 100 == 0 :
+           walker_data =  garbage_clear_for_walker_data(walker_data)
 
+        aaa = time.time()
 
-        # we are iterating through each WALKER
-        # every thread has this in their private domain, each process will count how many walkers died !
+        r = walker_data[:, 0]
+        c = walker_data[:, 1]
+        z = walker_data[:, 2]
+        is_alive = walker_data[:, 3]
 
-
-            # if this walker DIED , then skip iteration
-
-
-
-
-            aaa = time.time()
-
-            r = walker_data[: , 0]
-            c = walker_data[: , 1]
-            z = walker_data[: , 2]
-            is_alive =  walker_data[: , 3]
-
-
-           # theta  = np.ones(len(walker_data))  # [ th , th , th ... th ]
-            #beta   = np.ones(len(walker_data))  # [ be , be , be ... be
-            theta =  np.random.default_rng(seed).random( len(walker_data) ) * math.pi * 2
-            beta  =  np.random.default_rng(seed).random( len(walker_data) ) * math.pi
+        # theta  = np.ones(len(walker_data))  # [ th , th , th ... th ]
+        # beta   = np.ones(len(walker_data))  # [ be , be , be ... be
+        theta = np.random.default_rng(seed).random(len(walker_data)) * math.pi * 2
+        beta = np.random.default_rng(seed).random(len(walker_data)) * math.pi
         # WE EXTRACT X Y Z SEPRATELY
 
-            nr =  r + (step_distance * np.sin(beta) * np.cos(theta))
-            nc =  c + (step_distance * np.sin(beta) * np.cos(theta))
-            nz =  z + ( step_distance * np.cos(beta) )
-            number_of_negitive_values = len(nr[nr < 0 ]) + len(nc[nc < 0 ]) + len(nz[nz < 0 ])
-            new_walker_data = np.column_stack((nr , nc , nz , is_alive))
+        nr = r + (step_distance * np.sin(beta) * np.cos(theta))
+        nc = c + (step_distance * np.sin(beta) * np.cos(theta))
+        nz = z + (step_distance * np.cos(beta))
 
-            converted_to_index_new_walker_data = new_walker_data // 1       # from POSITION --> Index
+        # here we are just CHECKING if we generated NEGITIVE positions !
+        number_of_negitive_values = len(nr[nr < 0]) + len(nc[nc < 0]) + len(nz[nz < 0])
 
-            collided = return_collided_walkers(converted_to_index_new_walker_data , full_array)
+        new_walker_data = np.column_stack((nr, nc, nz, is_alive))
 
+        converted_to_index_new_walker_data = ( new_walker_data // 1 )  # from POSITION --> Index
 
-            # IF IT IN TOUCHING OR BEHOND THE GRAIN, WE CALCULATE TEH LIKELY
-            likely = np.ones(len(collided)) * ( 2 * step_distance * surface_relaxivity / (3 *fluid_diffusion_coefficient ) )
-            random_number = np.random.default_rng(seed).random(size = len(collided))
-            is_dead = random_number > likely ## if random number > likely    then DEAD      # output is [ False , True , False ..... etc ]
+        collided = return_collided_walkers(converted_to_index_new_walker_data, full_array)
 
-                    #print("walker dead!!!!")
-
-
-            ## O(n) ... we need to loop Through the entire set , to update ..
-            # i do not know if we can do it , with just a if else statement on np.array
-
-            ## IF THERE IS NO COLLISION , THEN r <- nr
-            r[collided == 0] = nr[collided == 0 ]
-            c[collided == 0] = nc[collided == 0 ]
-            z[collided == 0] = nz[collided == 0 ]
-
-            ## IF THERE IS COLLISION AND DEAD , THEN is_alive=0
-            before_killing = np.sum(is_alive)
-            is_alive[(is_dead == 1) & (collided == 1)] = 0
-            after_killing = np.sum(is_alive)
-
-
-            number_of_dead_in_this_bach = before_killing - after_killing
-            current_live_walkers = current_live_walkers - number_of_dead_in_this_bach
+        # IF IT IN TOUCHING OR BEHOND THE GRAIN, WE CALCULATE TEH LIKELY
+        likely = np.ones(len(collided)) * (2 * step_distance * surface_relaxivity / (3 * fluid_diffusion_coefficient))
+        random_number = np.random.default_rng(seed).random(size=len(collided))
+        is_dead = (random_number > likely)  ## if random number > likely    then DEAD      # output is [ False , True , False ..... etc ]
 
 
 
-
-            fraction = current_live_walkers / initial_population_walkers # p(t) =  N_1 / N_o
-
-            t = t + delta_t
+        ## O(n) ... we need to loop Through the entire set , to update ..
 
 
+        ## IF THERE IS NO COLLISION , THEN r <- nr
+        r[collided == 0] = nr[collided == 0]
+        c[collided == 0] = nc[collided == 0]
+        z[collided == 0] = nz[collided == 0]
 
-            if current_live_walkers == 0 :
-                break
+        ## IF THERE IS COLLISION AND DEAD , THEN is_alive=0
+        before_killing = np.sum(is_alive)
+        is_alive[(is_dead == 1) & (collided == 1)] = 0
+        after_killing = np.sum(is_alive)
 
+        number_of_dead_in_this_bach = before_killing - after_killing
+        current_live_walkers = current_live_walkers - number_of_dead_in_this_bach
 
-            p_fraction.append((fraction,t))
+        fraction = (current_live_walkers / initial_population_walkers )  # p(t) =  N_1 / N_o
 
+        t = t + delta_t
 
-            bbb = time.time()
-            print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa} ||negitive : {number_of_negitive_values}")
+        if current_live_walkers == 0:
+            break
+
+        p_fraction.append((fraction, t))
+
+        bbb = time.time()
+        print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa} ||negitive : {number_of_negitive_values}")
 
             # is_alive = 1 :: for being alive      is_alive = 0 for being dead
 

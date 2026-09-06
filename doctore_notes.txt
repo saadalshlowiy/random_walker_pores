@@ -23,3 +23,7 @@ but i understood it ..
 
     but the question still remains , why do we get values like
     these (-3 , -122)
+
+
+
+

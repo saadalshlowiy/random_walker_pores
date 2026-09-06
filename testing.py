@@ -16,7 +16,7 @@ def generate_all_in_one_array():
 
 
 
-    numberOfWalkers=19
+    numberOfWalkers=12
 
 
     # (r , c , z , is_alive , nr , nc , nz , is_alive , col , dead)
@@ -31,7 +31,10 @@ def generate_all_in_one_array():
     is_dead =  np.random.default_rng().integers(low=0, high=2 , size = numberOfWalkers)
     isAlive = is_alive
     all_in_one = np.column_stack((r,c,z,is_alive,nr,nc,nz,isAlive,is_collid,is_dead))
-
+    walker_data = np.column_stack((r , c , z , is_alive))
+    print(f"normal walker data -->\n{walker_data}\nOnly Alive are\n{walker_data[walker_data.T[-1] == 1 ]}")
+    return
+    walker_data[walker_data.T[-1] == 1 ]
 
     ## if no collision , updated next step ...
 
@@ -51,6 +54,7 @@ def generate_all_in_one_array():
 
 
 
+print(f"exp{np.log(np.exp(np.ones(5)))}")
 
 def get_array_from_3D_image(path="/home/saad/Desktop/single_pore.tif"):
     img = Image.open(path)

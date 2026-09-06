@@ -1,0 +1,6 @@
+report :
+
+        <> sunday
+            did two optimization : (1) made everything vectorizational
+                                   (2) cleaned garbage data
+            (-) still the graph has problems !
