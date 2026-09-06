@@ -8,8 +8,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-a=np.array([1,2,3,4,5])
+#a=np.array([1,2,3,4,5])
 
+
+#print(f"i want 3 floors , each floor has 4 arrays , each array has 2 elements {np.ones((3 , 4 , 2))}")
 
 
 
@@ -19,7 +21,8 @@ def get_array_from_3D_image(path="/home/saad/Desktop/single_pore.tif"):
     print(f"3D array has axis {full_array.ndim} with shape {full_array.shape} and has {full_array.size} Voxcels")
     return full_array
 
-
+help(np.any) 
+help(np.all)
 
 def convert_position_to_index(position ):
     (x , y , z) = position 
@@ -64,16 +67,6 @@ def print_3D_array(array):
     
 
 
-
-x = np.linspace(0, 5, 20)
-
-y = np.linspace(0, 10, 20)
-
-plt.plot(x, y, 'purple') # line
-
-plt.plot(x, y, 'o')      # dots
-
-plt.show()
 
 #from concurrent.future import ProcessPoolExecutor
 
