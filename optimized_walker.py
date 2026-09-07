@@ -5,12 +5,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageSequence
 
+from time import perf_counter
+
+
 # it is much smaller, depending on the resolution of micro-ct
 RESOLUTION = 0.2  # let the lenght of the pixcel be 2 micro-meter
 
-step_distance = RESOLUTION  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
+step_distance = RESOLUTION  * 0.2  # s = 0.2 X L .... L is lenght of one pixcel in micro meteres
 fluid_diffusion_coefficient = 2.5e3 # micro meter^2 / second
 surface_relaxivity = 20  # micro-meter/second
+
+
 
 
 
@@ -19,24 +24,6 @@ RADIUS = 50 # pixcels given from doctor
 RADIUS_IN_MICRO_METERS = RADIUS * RESOLUTION
 
 
-def analytical_approach(surface_relaxivity , final_time , radius_in_micro_meter, iterations ):
-    # we are going to model the equation  M/M = exp(-3pt/r) , were t=0 --> t=final_t || final_t is aquired AFTER the simulation (when did we stop)
-    # this method is used as a benshmark towards the simulation ...
-    t = np.linspace(0 , final_time ,iterations )
-
-    y =  np.exp((-3 * t * surface_relaxivity) / radius_in_micro_meter )
-
-
-
-    print(f"this is the value of y\nnumbers:{len(y)}\nmin:{ np.min(y) }\nmax:{ np.max(y)} " )
-    ## this is output ##
-    # this is the value of y
-    #numbers:100
-    #min:0.9984012793176064
-    #max:1.0
-
-
-    return (t , y)
 
 
 def temp_sin(delta):
@@ -77,22 +64,11 @@ def surface_relaxation_for_simulation(p_t):
     # this is mimking T_2 .. starts HIGH , ends LOW
     print("\n\nNOW printing the surface relaxation...\n\n\n")
 
-    number_of_elements = len(p_t)
-    # pre-declaration
-
-    x =  np.empty(number_of_elements)
-    y =  np.empty(number_of_elements)
-
-    for i in range(number_of_elements):
-        (ratio , time) = p_t[i]
-        x[i] = time
-        #y[i] =  math.log(ratio)
-        y[i] =  ratio
-        #print(f"x:{time} || y:{ratio}")
 
 
-
-
+    p_t = np.array(p_t)
+    x = p_t.T[1]
+    y = np.log(p_t.T[0])
 
     plt.plot(x,y ,'purple' )
 
@@ -100,6 +76,23 @@ def surface_relaxation_for_simulation(p_t):
 def surface_relaxation_for_analytical(coordinates):
     (x , y) = coordinates
     plt.plot(x,y , 'o')
+
+def analytical_approach(surface_relaxivity , final_time , radius_in_micro_meter, iterations ):
+    # we are going to model the equation  M/M = exp(-3pt/r) , were t=0 --> t=final_t || final_t is aquired AFTER the simulation (when did we stop)
+    # this method is used as a benshmark towards the simulation ...
+    t = np.linspace(0 , final_time ,iterations )
+    y =  np.exp((-3 * t * surface_relaxivity) / radius_in_micro_meter )
+    y = np.log(y)# base _ 10
+    print(f"this is the value of y\nnumbers:{len(y)}\nmin:{ np.min(y) }\nmax:{ np.max(y)} " )
+
+    #OVERALL TIME 135.56942486763
+    #final time that is going to anaylitical approach is 0.0002666666666666664
+    #this is the value of y
+    #numbers:100
+    #min:-0.0015999999999999522
+    #max:0.0
+
+    return (t , y)
 
 
 def surface_relaxation(p_t , coordinates):
@@ -123,12 +116,12 @@ def get_array_from_3D_image(path="/home/saad/Desktop/single_pore.tif"):
     print(f"\n3D array has axis {full_array.ndim} with shape {full_array.shape} and has {full_array.size} Voxcels\n")
     return full_array
 
-def get_indexes_of_pore_from_3D_array(array):
+def get_indexes_of_pore_from_3D_array(array , representation_value_of_pore):
     indexes = [] # unknown number   THUS THE INDEX ARE IN FORMAT --> [ (r , c , z) ... ]
     for z in range(len(array)):
         for r in range(len(array[z])):
             for c in range(len(array[z][r])):
-                if array[z][r][c] == 1 :    # pores are 1     grains are 0
+                if array[z][r][c] == representation_value_of_pore  :    # pores are 1     grains are 0
                     indexes.append((r , c , z))
 
     return indexes
@@ -183,8 +176,8 @@ def convert_index_to_mid_point_position(index):
     return (r , c , z)
 
 
-def get_initiated_walkers(full_array):
-    pores_indexes = get_indexes_of_pore_from_3D_array(full_array)
+def get_initiated_walkers(full_array,representation_value_of_pore):
+    pores_indexes = get_indexes_of_pore_from_3D_array(full_array, representation_value_of_pore)
     number_of_pores = len(pores_indexes)
     walker_data = []
     #print(f"number of walkers should me {number_of_pores}")
@@ -214,22 +207,24 @@ def get_initiated_walkers(full_array):
     return walker_data
 
 
-def return_collided_walkers(converted_to_index_new_walker_data , full_array) :
-            is_collision = np.zeros(len(converted_to_index_new_walker_data))
+def return_collided_walkers(converted_to_index_new_walker_data , full_array , representation_value_of_grain = 0 ) :
+    converted_to_index_new_walker_data=np.int32(converted_to_index_new_walker_data)
+    all_z_index_levels_walkers_at = converted_to_index_new_walker_data.T[2]
+    all_c_index_levels_walkers_at = converted_to_index_new_walker_data.T[1]
+    all_r_index_levels_walkers_at = converted_to_index_new_walker_data.T[0]
+    #print(f"type{all_z_index_levels_walkers_at[0]}")
+    result = full_array[ all_z_index_levels_walkers_at , all_r_index_levels_walkers_at , all_c_index_levels_walkers_at  ]
+    # now we have the VALUES of the pixcels .. there might be 1 , 2, 3 ..etc as values
+    # # we do not know which is grain , unless TOLD
 
-            for i in range(len(converted_to_index_new_walker_data)) :
 
-            ## this is a BUG , WE ARE GETTING NEGITIVE VALUES AND WE DO NOT KNOW WHY
-                (r , c , z , a) = np.abs(converted_to_index_new_walker_data[i])
-                #print("index of pixcels is :" , r , c , z , a)
-                if r > 120 or c > 120 or z > 120 :
-                    is_collision[i] = 1
-                    continue
+    # first detech the GRAIN , then change their value --> unique = MAX() + 1
+    represent_collision_with_this_number = np.max(result)+1
+    # we replace , each GRAIN value , with this UNIQUE number
+    result[result == representation_value_of_grain]  = represent_collision_with_this_number
+    result = result // represent_collision_with_this_number  # all other values are 0 , cause they are smaller , except GRAINS --> 1 which is COLLISION
+    return result
 
-                if full_array[int(z)][int(r)][int(c)] == 0 :
-                    is_collision[i] = 1
-
-            return is_collision
 
 def update_walker_state(walker_data , new_walker_data  , is_dead , collided ) :
 
@@ -378,21 +373,18 @@ def semi_main():
 def garbage_clear_for_walker_data(walker_data):
     return walker_data[walker_data.T[-1] == 1 ]
 
-def semi_semi_main():
+def semi_semi_main( constraint_number = 0.18  , interations = 600):
     # get the image , and store it in np_array
     full_array =  get_array_from_3D_image()
 
-
+    representation_value_of_pore = 1
+    representation_value_of_grain = 0
      # now it looks like this ( r , c , z , is_alive=1 )
-    walker_data = np.array(get_initiated_walkers(full_array ))
-
-    ## potiential improvement here is to Dynamically re-size array to shorten it
+    walker_data = np.array(get_initiated_walkers(full_array,representation_value_of_pore ))
 
     seed = 99
 
-
-
-    # now start the simulation
+    rng = np.random.default_rng(seed)
 
 
     global current_live_walkers
@@ -405,8 +397,9 @@ def semi_semi_main():
 
     delta_t = calculate_increment_time(step_distance ,fluid_diffusion_coefficient)
     # should be 900 iterations
-    interations = 100
+
     p_fraction = []
+
 
     start = time.time()
     for jj in range(interations):
@@ -415,7 +408,7 @@ def semi_semi_main():
            walker_data =  garbage_clear_for_walker_data(walker_data)
 
         aaa = time.time()
-
+        length_of_walker_data_array = len(walker_data)
         r = walker_data[:, 0]
         c = walker_data[:, 1]
         z = walker_data[:, 2]
@@ -423,27 +416,35 @@ def semi_semi_main():
 
         # theta  = np.ones(len(walker_data))  # [ th , th , th ... th ]
         # beta   = np.ones(len(walker_data))  # [ be , be , be ... be
-        theta = np.random.default_rng(seed).random(len(walker_data)) * math.pi * 2
-        beta = np.random.default_rng(seed).random(len(walker_data)) * math.pi
+        theta = rng.random(length_of_walker_data_array) * math.pi * 2
+        beta = rng.random(length_of_walker_data_array) * math.pi
         # WE EXTRACT X Y Z SEPRATELY
 
         nr = r + (step_distance * np.sin(beta) * np.cos(theta))
-        nc = c + (step_distance * np.sin(beta) * np.cos(theta))
+        nc = c + (step_distance * np.sin(beta) * np.sin(theta))
         nz = z + (step_distance * np.cos(beta))
 
         # here we are just CHECKING if we generated NEGITIVE positions !
-        number_of_negitive_values = len(nr[nr < 0]) + len(nc[nc < 0]) + len(nz[nz < 0])
+        #number_of_negitive_values = len(nr[nr < 0]) + len(nc[nc < 0]) + len(nz[nz < 0])
 
         new_walker_data = np.column_stack((nr, nc, nz, is_alive))
 
-        converted_to_index_new_walker_data = ( new_walker_data // 1 )  # from POSITION --> Index
+        converted_to_index_new_walker_data = np.floor( new_walker_data  )  # from POSITION --> Index
 
         collided = return_collided_walkers(converted_to_index_new_walker_data, full_array)
-
+        lenght_of_collided_array = len(collided)
         # IF IT IN TOUCHING OR BEHOND THE GRAIN, WE CALCULATE TEH LIKELY
-        likely = np.ones(len(collided)) * (2 * step_distance * surface_relaxivity / (3 * fluid_diffusion_coefficient))
-        random_number = np.random.default_rng(seed).random(size=len(collided))
-        is_dead = (random_number > likely)  ## if random number > likely    then DEAD      # output is [ False , True , False ..... etc ]
+        likely = np.ones(lenght_of_collided_array) * (2 * step_distance * surface_relaxivity / (3 * fluid_diffusion_coefficient))
+
+        # from 0.17 ---> 0.25
+        # constraint_number = 0.18 # we decrease the amplitude of the numbers in random_numbers
+        random_number = rng.random(size=lenght_of_collided_array) * constraint_number
+
+        # random_number > likely KILLS TOO FAST !
+        #is_dead = (random_number >  likely  )
+
+        #a bit too slow it gave F:->0.9800 and it is suppose to be F:0.930
+        is_dead =  (random_number  < likely  )
 
 
 
@@ -464,16 +465,17 @@ def semi_semi_main():
         current_live_walkers = current_live_walkers - number_of_dead_in_this_bach
 
         fraction = (current_live_walkers / initial_population_walkers )  # p(t) =  N_1 / N_o
-
+        true_fraction = math.exp((-3 * t * surface_relaxivity) / RADIUS_IN_MICRO_METERS )
         t = t + delta_t
+
 
         if current_live_walkers == 0:
             break
 
         p_fraction.append((fraction, t))
-
+        ## [() () () () ()]
         bbb = time.time()
-        print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa} ||negitive : {number_of_negitive_values}")
+        print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa} || diff : {true_fraction - fraction}")
 
             # is_alive = 1 :: for being alive      is_alive = 0 for being dead
 
@@ -482,20 +484,24 @@ def semi_semi_main():
 
     end = time.time()
 
-    print(f"\n\n\nOVERALL TIME {end - start} ")
-    print(f"final time that is going to anaylitical approach is {t}")
+    print(f"\nOVERALL TIME {end - start} ")
+    time.sleep(2)
+    print(f"t -> anaylyical ::is::--> {t}")
+    time.sleep(1.3)
     coordinates = analytical_approach(surface_relaxivity , t , RADIUS_IN_MICRO_METERS, interations )
-
-    print(f"\n\n\nSTEP DISTANCE USED IS {step_distance/RESOLUTION} X L")
+    # (t , y)
+    print(f"\nSTEP DISTANCE USED IS {step_distance/RESOLUTION} X L")
+    time.sleep(1.5)
     surface_relaxation(p_fraction, coordinates)
 
 
-def main():
+def un_optimized_main():
     # initialize walkers then store them
     full_array =  get_array_from_3D_image()
 
      # now it looks like this ( X Y Z w )    w = 0 , 1
-    walker_data = np.array(get_initiated_walkers(full_array ))
+    representation_value_of_pore = 1
+    walker_data = np.array(get_initiated_walkers(full_array ,representation_value_of_pore))
 
 
 
@@ -504,14 +510,15 @@ def main():
 
     #(1) first we increment the time
     global current_live_walkers
-
+    current_live_walkers = len(walker_data)
     global p_fraction
+    initial_population_walkers = current_live_walkers
 
     t = 0
 
     delta_t = calculate_increment_time(step_distance ,fluid_diffusion_coefficient)
 
-    interations = 7200
+    interations = 600
     p_fraction = []
 
     start = time.time()
@@ -575,24 +582,28 @@ def main():
         if current_live_walkers == 0 :
             break
         fraction = current_live_walkers / initial_population_walkers # p(t) =  N_1 / N_o
+        true_fraction = math.exp((-3 * t * surface_relaxivity) / RADIUS_IN_MICRO_METERS )
         p_fraction.append((fraction,t))  # storing( p(t) , t )
         # once we did all walkers in ONE GO , then we update the time
         t = t + delta_t
         bbb = time.time()
-        print(f"{jj}|T={t} | F={fraction} || {bbb - aaa}")
+        print(f"{jj}|T={t} | F={fraction} || {bbb - aaa} || diff : {true_fraction - fraction} ")
 
     end = time.time()
 
     print(f"\nOver all time {end - start} ")
     coordinates = analytical_approach(surface_relaxivity , t , RADIUS_IN_MICRO_METERS, interations )
-    print(f"\n\n\nSTEP DISTANCE USED IS {step_distance/RESOLUTION} X L")
+    print(f"\nSTEP DISTANCE USED IS {step_distance/RESOLUTION} X L")
     surface_relaxation(p_fraction, coordinates)
 
-semi_semi_main();
+
+def main():
+
+    semi_semi_main( constraint_number = 0.18  , interations = 1200)
 
 
 #semi_main() ;print("semi main()")
 
 
-#main()
+main()
 #print("main()")

@@ -8,7 +8,7 @@ from PIL import Image , ImageSequence
 
 from math import *
 
-#print([math.exp(e) for e in np.zeros(9) ])
+print(np.log(np.ones(4)))
 
 import time
 
@@ -118,36 +118,6 @@ def get_initiated_walkers(full_array , initial_number_of_walkers):
 
     return walker_data
 
-
-
-def return_collided_walkers(converted_to_index_new_walker_data , full_array) :
-            is_collision = np.zeros(len(converted_to_index_new_walker_data))
-
-            for i in range(len(converted_to_index_new_walker_data)) :
-                (r , c , z , a) = converted_to_index_new_walker_data[i]
-                print("index of pixcels is :" , r , c , z , a)
-                if r > 120 or c > 120 or z > 120 :
-                    is_collision[i] = 1
-                    continue
-
-                if full_array[int(z)][int(r)][int(c)] == 0 :
-                    is_collision[i] = 1
-
-            return is_collision
-
-def action_no_collision(tu):
-
-    tu[:][0] = tu[:][4]   # Old => new
-    tu[:][1] = tu[:][5]  # Old => new
-    tu[:][2] = tu[:][6] # Old => new
-    return tu
-
-def action_collision_and_dead(tu):
-    tu[:][3] = 0
-    return tu
-
-def action_collision_and_live(tu):
-    return tu
 
 def update_walker_state(walker_data , new_walker_data  , is_dead , collided ) :
 
@@ -274,7 +244,7 @@ def x():
             p_fraction.append((fraction,t))  # storing( p(t) , t )
             print(f"T:{t} || F:{fraction}")
 
-x()
+
 def main():
     # initialize walkers then store them
     full_array =  get_array_from_3D_image()
@@ -419,6 +389,88 @@ def y():
 
 
 
+def return_collided_walkers(representation_value_of_grain = 0 ) :
 
-#print(random_walkers)
-#print(f"\n\nthis is for x = {random_walkers[: , 0]}\ny = {random_walkers[: , 1]}\n z = {random_walkers[: , 2]}")
+            full_array = get_array_from_3D_image()
+            leng = 28
+            rng = np.random.default_rng()
+            r = rng.integers(low=0 , high=60 , size = leng)
+            c  = rng.integers(low=0 , high=60 , size = leng)
+            z  = rng.integers(low=0 , high=60 , size = leng)
+            is_alive =  rng.integers(low=0 , high=2 , size = leng)
+
+            values = full_array[z , r , c] 
+            represent_collision_with_this_number = np.max(values)+1
+            #print(f"values before\n{values}\n{values[values == representation_value_of_grain]}\n")
+            values[values == representation_value_of_grain]  = represent_collision_with_this_number
+            values = values // represent_collision_with_this_number
+            converted_to_index_new_walker_data = np.floor(np.column_stack((r , c ,z , is_alive)))
+            is_collision = np.zeros(len(converted_to_index_new_walker_data))
+
+
+            #all_z_index_levels_walkers_at = converted_to_index_new_walker_data.T[2]
+            #all_c_index_levels_walkers_at = converted_to_index_new_walker_data.T[1]
+            ##all_r_index_levels_walkers_at = converted_to_index_new_walker_data.T[0]#
+
+            #result = full_array[all_z_index_levels_walkers_at ,all_r_index_levels_walkers_at ,all_c_index_levels_walkers_at  ]
+
+            #print(f"z:{all_z_index_levels_walkers_at}\nr:{all_r_index_levels_walkers_at}\nc:{all_c_index_levels_walkers_at}\nresult is :{ result }")
+            #print(f"testing\n\n1st:{full_array[all_z_index_levels_walkers_at[0]][all_r_index_levels_walkers_at[0]][all_c_index_levels_walkers_at[0]]}\n2nd:{full_array[all_z_index_levels_walkers_at[1]][all_r_index_levels_walkers_at[1]][all_c_index_levels_walkers_at[1]]}\n3nd:{full_array[all_z_index_levels_walkers_at[2]][all_r_index_levels_walkers_at[2]][all_c_index_levels_walkers_at[2]]}\n4nd:{full_array[all_z_index_levels_walkers_at[3]][all_r_index_levels_walkers_at[3]][all_c_index_levels_walkers_at[3]]}#\n5nd:{full_array[all_z_index_levels_walkers_at[4]][all_r_index_levels_walkers_at[4]][all_c_index_levels_walkers_at[4]]}")
+
+             #database = np.array( [
+             # [
+             #    [2,3,4] ,
+             #    [5,6,7] ,
+             #    [8,9,10]
+             #] ,
+             #[
+             #    [12,13,14] ,
+             #    [15,16,17] ,
+             #    [18,19,20]
+             #] ,
+             #[
+             #    [22,23,24] ,
+             #    [25,26,27] ,
+             #    [28,29,30]
+             #]  ] )
+             #
+             #z = [0  , 2]
+             #r = [2  ,  1]
+             #c = [1  ,  2]
+            #print(f"database::\n{database[z,r,c]}")
+
+
+            #print(f"converted array is \n{converted_to_index_new_walker_data}\n\n")
+            #print(f"z levels:\n{all_z_index_levels_walkers_at}")
+
+            #all_z_levels_walkers_at = full_array[all_z_index_levels_walkers_at]
+            #print(f"\n\nwe have {len(all_z_levels_walkers_at)} levels of z\nfirst is {all_z_levels_walkers_at[0].shape}\nsecond is{all_z_levels_walkers_at[1].shape}")
+
+
+            for i in range(len(converted_to_index_new_walker_data)) :
+
+
+                (r , c , z , a) = np.abs(converted_to_index_new_walker_data[i])
+                #print("index of pixcels is :" , r , c , z , a)
+                if r > 120 or c > 120 or z > 120 :
+                    is_collision[i] = 1
+                    continue
+
+                if full_array[int(z)][int(r)][int(c)] == representation_value_of_grain :
+                    is_collision[i] = 1
+
+            print(f"this is iterations:::\n{np.int16(is_collision)}\n\nAnd this is vector::\n{values}")
+
+
+return_collided_walkers()
+# arr = [ (2,3) , (4,5) , (6 , 9 )]
+
+# p_t = np.array(arr)
+# print(p_t)
+# x = p_t.T[0]
+
+# print(f"x:{x}")
+
+# y = p_t.T[1]
+
+# print(f"y:{y}")

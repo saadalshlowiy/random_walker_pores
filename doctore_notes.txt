@@ -1,5 +1,8 @@
 # notes from the doctore
 
+
+<><><><><><> SUNDAY <><><><><><>
+
 <+> the number of walkers == the number of poxecls , where each poxcel has ONE walker
 < - > what you did , is given N walkers , randomly pick a poxcel .
 
@@ -10,7 +13,7 @@
 <+> set a seed(99)
 
 
-<?> he also explain about local coordinates of a walker and global .. i do not know what is the relavence when i told him that i encounter negitive numbers ..
+<?> he also explain about local coordinates of a walker and global .. i do not know what is the relavence when i told him that i encounter - #
 but i understood it ..
     if a pixcel is 2nm .. then x is [0..2] and y is [0..2]
     and a walker is like (1.54 , 1.98) in local , but in global
@@ -25,5 +28,14 @@ but i understood it ..
     these (-3 , -122)
 
 
+<><><><><><>  MONDAY <><><><><><>
+    ~> the equations for updating the coordinates are incorrect(DONE)
+    ~> we want the probability of DIEing to be LOW
+    ~> optimize for loops , take out len() , interface np.random.default_rng(seed)
+    ~> increase the steps  , temporaraly , just to see FAST iterations
 
 
+<> Document you work for presentation
+<> T = should reteach 0.0512
+<> double you iterations
+<> go back to 0.2L , and adjust for it
