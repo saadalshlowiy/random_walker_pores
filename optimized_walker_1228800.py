@@ -609,36 +609,36 @@ import logging
 import os
 
 def main():
-    final_time = 0.000005
-    factor = 64
-    while(final_time < 1) :
-        boost_number_list = [ 0.29 ]
-        iterations = 600 * factor
-        for boost_number in boost_number_list :
-               (p_fraction, coordinates , total_time ) = semi_semi_main( boost_number   , iterations)
-               final_time = p_fraction[-1][1]
-               final_ratio = p_fraction[-1][0]
+    #final_time = 0.000005
 
-               ### here we should retreive the image , name it , store it
-               print(f"boost Number :{boost_number}\nIterations:{iterations}\nF_t:{final_time}\nfinal_ration:{final_ratio}")
-               time.sleep(1)
-               try:
-                   surface_relaxation(p_fraction, coordinates)
-                   os.system(f"cd Figures_Vectorized;mkdir iterations_{iterations}")
-                   plt.suptitle(f"{iterations} iterations")# edgecolor
-                   plt.title(f"Final time:{final_time:.5f}sec\nFinal magnetization:{final_ratio:.5f}\nTotal Durations of program:{round(total_time,1)}sec")
-                   plt.xlabel("Time Duration")
-                   plt.ylabel("log scale of magnetization")
-                   plt.tight_layout()
-                   plt.savefig(f"Figures_Vectorized/iterations_{iterations}/iterations_{iterations}_contraint_{boost_number}_resolution_.2_.png" , dpi = 500 , transparent = False )
-                   plt.show(block=False)
-                   plt.pause(6)
-                   plt.close() # to clear out memory
 
-               except Exception as exc:
-                   logging.exception("Exception occurred")
+        boost_number =  0.29
+        iterations = 1228800
 
-        factor = factor * 2  ### next time multiply by 2,3,4,5...?
+        (p_fraction, coordinates , total_time ) = semi_semi_main( boost_number   , iterations)
+        final_time = p_fraction[-1][1]
+        final_ratio = p_fraction[-1][0]
+
+        ### here we should retreive the image , name it , store it
+        print(f"boost Number :{boost_number}\nIterations:{iterations}\nF_t:{final_time}\nfinal_ration:{final_ratio}")
+        time.sleep(1)
+        try:
+            surface_relaxation(p_fraction, coordinates)
+            os.system(f"cd Figures_Vectorized;mkdir iterations_{iterations}")
+            plt.suptitle(f"{iterations} iterations")# edgecolor
+            plt.title(f"Final time:{final_time:.5f}sec\nFinal magnetization:{final_ratio:.5f}\nTotal Durations of program:{round(total_time,1)}sec")
+            plt.xlabel("Time Duration")
+            plt.ylabel("log scale of magnetization")
+            plt.tight_layout()
+            plt.savefig(f"Figures_Vectorized/iterations_{iterations}/iterations_{iterations}_contraint_{boost_number}_resolution_.2_.png" , dpi = 500 , transparent = False )
+            plt.show(block=False)
+            plt.pause(6)
+            plt.close() # to clear out memory
+
+        except Exception as exc:
+            logging.exception("Exception occurred")
+
+          ### next time multiply by 2,3,4,5...?
 
 
 main()
@@ -651,5 +651,5 @@ main()
 #semi_main() ;print("semi main()")
 
 
-main()
+
 #print("main()")

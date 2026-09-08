@@ -374,7 +374,7 @@ def semi_main():
 def garbage_clear_for_walker_data(walker_data):
     return walker_data[walker_data.T[-1] == 1 ]
 
-def semi_semi_main( boost_number = 0.18  , iterations = 600):
+def semi_semi_main( thread_num , boost_number = 0.18  , iterations = 600):
     # get the image , and store it in np_array
     full_array =  get_array_from_3D_image()
 
@@ -482,7 +482,7 @@ def semi_semi_main( boost_number = 0.18  , iterations = 600):
         p_fraction.append((fraction, t))
         ## [() () () () ()]
         bbb = time.time()
-        print(f"{jj}|| T:{t} || F:{fraction} || {bbb - aaa} || diff : {true_fraction - fraction}")
+        print(f"Thread({thread_num})>{jj}|| T:{t} || F:{fraction} || {bbb - aaa} || diff : {true_fraction - fraction}")
 
             # is_alive = 1 :: for being alive      is_alive = 0 for being dead
 
@@ -608,6 +608,38 @@ def un_optimized_main():
 import logging
 import os
 
+import threading
+def thread_task(thread_num , boost_number , iterations):
+    (p_fraction, coordinates , total_time ) = semi_semi_main(thread_num, boost_number, iterations)
+    final_time = p_fraction[-1][1]
+    final_ratio = p_fraction[-1][0]
+
+    surface_relaxation(p_fraction, coordinates)
+    os.system(f"cd Figures_Vectorized;mkdir iterations_{iterations}")
+    plt.suptitle(f"{iterations} iterations")# edgecolor
+    plt.title(f"Final time:{final_time:.5f}sec\nFinal magnetization:{final_ratio:.5f}\nTotal Durations of program:{round(total_time,1)}sec")
+    plt.xlabel("Time Duration")
+    plt.ylabel("log scale of magnetization")
+    plt.tight_layout()
+    plt.savefig(f"Figures_Vectorized/iterations_{iterations}/iterations_{iterations}_contraint_{boost_number}_resolution_.2_.png" , dpi = 500 , transparent = False )
+    #plt.show(block=False)
+    #plt.pause(1)
+    #plt.close() # to clear out memory
+def main_master_thread():
+    #iterations = [76800 , 153600 , 307200 , 614400 , 1228800]
+    iterations = [70 , 150 , 302 , 621 , 922]
+    t1 = threading.Thread(target = thread_task , args=(1,[0.29] , iterations[0]  ))
+    t2 = threading.Thread(target = thread_task , args=(2,[0.29] , iterations[1]  ))
+    t3 = threading.Thread(target = thread_task , args=(3,[0.29] , iterations[2]  ))
+    t4 = threading.Thread(target = thread_task , args=(4,[0.29] , iterations[3]  ))
+    t5 = threading.Thread(target = thread_task , args=(5,[0.29] , iterations[4]  ))
+
+
+    print("startings threads ") ; time.sleep(2)
+    t1.start() ; t2.start() ; t3.start() ; t4.start() ; t4.start() ; t5.start()
+
+    t1.join() ; t2.join() ; t3.join() ; t4.join() ; t4.join() ; t5.join()
+main_master_thread()
 def main():
     final_time = 0.000005
     factor = 64
@@ -615,7 +647,7 @@ def main():
         boost_number_list = [ 0.29 ]
         iterations = 600 * factor
         for boost_number in boost_number_list :
-               (p_fraction, coordinates , total_time ) = semi_semi_main( boost_number   , iterations)
+               (p_fraction, coordinates , total_time ) = semi_semi_main( thread_num ,boost_number   , iterations)
                final_time = p_fraction[-1][1]
                final_ratio = p_fraction[-1][0]
 
@@ -641,7 +673,7 @@ def main():
         factor = factor * 2  ### next time multiply by 2,3,4,5...?
 
 
-main()
+
 
     # store the OVERAL time
     # the T_final
@@ -651,5 +683,5 @@ main()
 #semi_main() ;print("semi main()")
 
 
-main()
+
 #print("main()")

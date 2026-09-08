@@ -8,7 +8,6 @@ from PIL import Image , ImageSequence
 
 from math import *
 
-print(np.log(np.ones(4)))
 
 import time
 
@@ -399,7 +398,7 @@ def return_collided_walkers(representation_value_of_grain = 0 ) :
             z  = rng.integers(low=0 , high=60 , size = leng)
             is_alive =  rng.integers(low=0 , high=2 , size = leng)
 
-            values = full_array[z , r , c] 
+            values = full_array[z , r , c]
             represent_collision_with_this_number = np.max(values)+1
             #print(f"values before\n{values}\n{values[values == representation_value_of_grain]}\n")
             values[values == representation_value_of_grain]  = represent_collision_with_this_number
@@ -462,7 +461,7 @@ def return_collided_walkers(representation_value_of_grain = 0 ) :
             print(f"this is iterations:::\n{np.int16(is_collision)}\n\nAnd this is vector::\n{values}")
 
 
-return_collided_walkers()
+#return_collided_walkers()
 # arr = [ (2,3) , (4,5) , (6 , 9 )]
 
 # p_t = np.array(arr)
@@ -474,3 +473,45 @@ return_collided_walkers()
 # y = p_t.T[1]
 
 # print(f"y:{y}")
+
+
+
+# if folder not exist :
+#   make it
+#   do iterations under it
+#
+#import os
+#iterations = 1200
+#result = os.system(f"ls Figures_Vectorized | grep iterations_{iterations}")
+t = [2]
+c = [4]
+#print(result)
+#x = np.linspace(0 , 100 , 200)
+#y = (x * x) + 3
+#z = y * x + y
+#
+#plt.plot(x, y , 'green' , label = "Product A")
+#plt.plot(x , z , 'red' , label = "Product B")
+#plt.legend(loc = "upper left")
+#plt.suptitle("temp")# edgecolor
+##plt.table( cellText = [t , c] , rowLabels = ['final time ' , 'final ratio']  , loc = 'bottom' , cellLoc = 'center').scale(1,1.5)
+##plt.subplots_adjust(bottom = 0.25)
+##plt.xticks([])
+#plt.title(f"Final time:{7}\nFinal magnetization:{8}\ntotal Time:{45}sec")
+#plt.xlabel("Time Duration")
+#plt.ylabel("log scale of magnetization")
+#plt.tight_layout()
+#plt.savefig("tempImage.png" , dpi = 500 , transparent = False )
+#num =0.999594314
+#print(f"{num :.4f}")
+#help(plt.tight_layout)
+fac = 40
+it = 600 * fac
+how_many_times = 0
+while (it < 9000000):
+    how_many_times+=1
+    fac = fac * 4
+    print(f"iter {it} fac {fac}")
+    time.sleep(0.5)
+    it = 600 * fac
+print(how_many_times, fac)
