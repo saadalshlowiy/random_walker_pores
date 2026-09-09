@@ -176,7 +176,7 @@ def x():
         #################
         #################
         #################
-        initial_population_walkers = 100000
+        initial_population_walkers = 10000
         current_live_walkers = initial_population_walkers
         placed_walkers = 0
         # it is much smaller, depending on the resolution of micro-ct
@@ -224,12 +224,13 @@ def x():
 
         # WE COMPUTE NEW VALUES FOR X Y Z
             nr =  r + (step_distance * np.sin(beta) * np.cos(theta))
-            nc =  c + (step_distance * np.sin(beta) * np.cos(theta))
+            nc =  c + (step_distance * np.sin(beta) * np.sin(theta))
             nz =  z + ( step_distance * np.cos(beta))
         #print("parallel computing:-->\n")
         #print(f"\nr-->{r}\nc-->{c}\nz-->{z}")
         #print(f"\nnr-->{nr}\nnc-->{nc}\nnz-->{nz}")
             new_walker_data = np.column_stack((nr , nc , nz , is_alive))
+            print(f"\n\nnew walker data is \n shape::=>{new_walker_data.shape}\n\n{new_walker_data}")
             converted_to_index_new_walker_data = new_walker_data // 1       # from POSITION --> Index
             collided = return_collided_walkers(converted_to_index_new_walker_data , full_array)
             likely = np.ones(len(collided)) * ( 2 * step_distance * surface_relaxivity / (3 *fluid_diffusion_coefficient ) )
@@ -243,7 +244,7 @@ def x():
             p_fraction.append((fraction,t))  # storing( p(t) , t )
             print(f"T:{t} || F:{fraction}")
 
-
+help(np.divide)
 def main():
     # initialize walkers then store them
     full_array =  get_array_from_3D_image()
@@ -456,7 +457,9 @@ def return_collided_walkers(representation_value_of_grain = 0 ) :
                     continue
 
                 if full_array[int(z)][int(r)][int(c)] == representation_value_of_grain :
-                    is_collision[i] = 1
+                    if is_collision[i] != 1 :
+                        print(f"incorrect calculation of is_collide")
+                        raise(Exception)
 
             print(f"this is iterations:::\n{np.int16(is_collision)}\n\nAnd this is vector::\n{values}")
 

@@ -128,13 +128,6 @@ def get_indexes_of_pore_from_3D_array(array , representation_value_of_pore):
     return indexes
 
 
-def convert_position_to_index(position ):
-    (r , c , z) = position
-    return (int(r) , int(c) , int(z))
-
-
-
-        ## walker_data      full_array
 
 
 
@@ -169,15 +162,26 @@ def random_beta():
 import time
 
 
-def convert_index_to_mid_point_position(index):
+def convert_index_to_mid_point_position(index , resolution):
     (r , c , z) = index
-    r+=0.5
-    c+=0.5
-    z+=0.5
-    return (r , c , z)
 
+    pr = (r-1) * resolution + (0.5 * resolution)
+    pc = (c-1) * resolution + (0.5 * resolution)
+    pz = (z-1) * resolution + (0.5 * resolution)
 
-def get_initiated_walkers(full_array,representation_value_of_pore):
+    if r == 0 or c == 0 or z == 0 :
+        if r == 0 :
+            pr = (0.5 * resolution)
+        if c == 0 :
+            pc = (0.5 * resolution)
+        if z == 0 :
+            pz = (0.5 * resolution)
+
+    print(f"\nconverting index to position , for a walker :: ({r},{c},{z})-->  ({pr} , {pc} , {pz}) ")
+    #time.sleep(10)
+    return (pr , pc , pz)
+
+def get_initiated_walkers(full_array,representation_value_of_pore, resolution):
     pores_indexes = get_indexes_of_pore_from_3D_array(full_array, representation_value_of_pore)
     number_of_pores = len(pores_indexes)
     walker_data = []
@@ -199,7 +203,7 @@ def get_initiated_walkers(full_array,representation_value_of_pore):
 
         index = pores_indexes[i] # we will get the first pore's pixcel , then second ..
         # 2 we calculate the MIDDLE POSITION OF THIS PORE (4 , 5 , 8) --> (4.5 , 5.5 , 8.5)
-        position_for_uninitialized_walker = convert_index_to_mid_point_position(index) + (1,)  # so now it is like this (x , y , z , is_alive)
+        position_for_uninitialized_walker = convert_index_to_mid_point_position(index , resolution) + (1,)  # so now it is like this (x , y , z , is_alive)
      #   print(f"we converted {index} to {position_for_uninitialized_walker} for walker[{i}]")
         walker_data.append(position_for_uninitialized_walker)
 
@@ -381,7 +385,7 @@ def semi_semi_main( boost_number = 0.18  , iterations = 600):
     representation_value_of_pore = 1
     representation_value_of_grain = 0
      # now it looks like this ( r , c , z , is_alive=1 )
-    walker_data = np.array(get_initiated_walkers(full_array,representation_value_of_pore ))
+    walker_data = np.array(get_initiated_walkers(full_array,representation_value_of_pore,RESOLUTION ))
 
     seed = 99
 
@@ -610,9 +614,9 @@ import os
 
 def main():
     final_time = 0.000005
-    factor = 64
+    factor = 1
     while(final_time < 1) :
-        boost_number_list = [ 0.29 ]
+        boost_number_list = [ 1 ]
         iterations = 600 * factor
         for boost_number in boost_number_list :
                (p_fraction, coordinates , total_time ) = semi_semi_main( boost_number   , iterations)

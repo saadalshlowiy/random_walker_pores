@@ -39,3 +39,8 @@ but i understood it ..
 <> T = should reteach 0.0512
 <> double you iterations
 <> go back to 0.2L , and adjust for it
+
+
+<> he said previously to debug , i did not cause i knew my code was 100%
+<> now i will debug
+<> no constents !!
