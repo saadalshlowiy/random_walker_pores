@@ -175,7 +175,15 @@ def convert_index_to_mid_point_position(index):
     c+=0.5
     z+=0.5
     return (r , c , z)
-
+def get_initiated_walkers_random(full_array , representation_value_of_pore, resolution , number_of_walkers = 10000):
+    pores_indexes = get_indexes_of_pore_from_3D_array(full_array, representation_value_of_pore)
+    walker_data = []
+    number_of_pores = len(pores_indexes)
+    for i in range(number_of_walkers):
+        # randomly pick pore index
+        index = pores_indexes[np.random.default_rng().random(low = 0 , high = number_of_pores ) ]
+        position_for_uninitialized_walker = convert_index_to_mid_point_position(index , resolution) + (1,)
+        walker_data.append(position_for_uninitialized_walker)
 
 def get_initiated_walkers(full_array,representation_value_of_pore):
     pores_indexes = get_indexes_of_pore_from_3D_array(full_array, representation_value_of_pore)

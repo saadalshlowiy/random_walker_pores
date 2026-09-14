@@ -244,7 +244,6 @@ def x():
             p_fraction.append((fraction,t))  # storing( p(t) , t )
             print(f"T:{t} || F:{fraction}")
 
-help(np.divide)
 def main():
     # initialize walkers then store them
     full_array =  get_array_from_3D_image()
@@ -485,9 +484,7 @@ def return_collided_walkers(representation_value_of_grain = 0 ) :
 #
 #import os
 #iterations = 1200
-#result = os.system(f"ls Figures_Vectorized | grep iterations_{iterations}")
-t = [2]
-c = [4]
+
 #print(result)
 #x = np.linspace(0 , 100 , 200)
 #y = (x * x) + 3
@@ -508,13 +505,20 @@ c = [4]
 #num =0.999594314
 #print(f"{num :.4f}")
 #help(plt.tight_layout)
-fac = 40
-it = 600 * fac
-how_many_times = 0
-while (it < 9000000):
-    how_many_times+=1
-    fac = fac * 4
-    print(f"iter {it} fac {fac}")
-    time.sleep(0.5)
-    it = 600 * fac
-print(how_many_times, fac)
+
+
+
+def display_walkers(walker_data=[]):
+    r = np.random.default_rng().integers(low=0 , high=20 , size = 15)
+    c = np.random.default_rng().integers(low=0 , high=20 , size = 15)
+
+    plt.scatter(r , c)
+    plt.show()
+
+#print(round(np.ones(4)*9.43258920000 , 3))
+#w = np.ones((13 , 4))
+#print(f"w:{w[:4]}\nWr{w[:,0][:4]}\nnewW{ w[:,0][:4] + (0.1 * np.sin(0.3) * np.cos(0.23))}")
+z1 = np.ones((1,10)) * np.random.default_rng().random()
+z2 = np.ones((1,10)) * np.random.default_rng().random()
+
+help(np.random.default_rng().random)
