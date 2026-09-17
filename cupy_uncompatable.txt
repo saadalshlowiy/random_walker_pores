@@ -1,119 +1,233 @@
-$ pip install cupy
-Collecting cupy
-  Downloading cupy-14.2.0.tar.gz (4.1 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.1/4.1 MB 467.0 kB/s eta 0:00:00
-  Installing build dependencies ... done
-  Getting requirements to build wheel ... error
-  error: subprocess-exited-with-error
-  
-  × Getting requirements to build wheel did not run successfully.
-  │ exit code: 1
-  ╰─> [76 lines of output]
-      Generating CUPY_CACHE_KEY from header files...
-      CUPY_CACHE_KEY (2013 files matching /tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/**): 87417f5ddafec4c853dab1863f8bb308dafc152c
-      
-      -------- Configuring Module: cuda --------
-      /tmp/tmp4h9_nf1r/a.cpp:1:10: fatal error: cublas_v2.h: No such file or directory
-          1 | #include <cublas_v2.h>
-            |          ^~~~~~~~~~~~~
-      compilation terminated.
-      Command '['x86_64-linux-gnu-g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O2', '-Wall', '-fPIC', '-D_FORCE_INLINES=1', '-DCYTHON_EXTERN_C=extern "C"', '-DNPY_TARGET_VERSION=NPY_2_0_API_VERSION', '-DCUPY_CACHE_KEY=87417f5ddafec4c853dab1863f8bb308dafc152c', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/libcudacxx', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/thrust', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/cub', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include', '-I/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/numpy/_core/include', '-c', '/tmp/tmp4h9_nf1r/a.cpp', '-o', '/tmp/tmp4h9_nf1r/tmp/tmp4h9_nf1r/a.o', '-std=c++17']' returned non-zero exit status 1.
-      /tmp/tmpqluma6zx/a.cpp:2:18: fatal error: cuda_runtime_api.h: No such file or directory
-          2 |         #include <cuda_runtime_api.h>
-            |                  ^~~~~~~~~~~~~~~~~~~~
-      compilation terminated.
-      **************************************************
-      *** WARNING: Cannot check compute capability
-      Command '['x86_64-linux-gnu-g++', '-fno-strict-overflow', '-Wsign-compare', '-DNDEBUG', '-g', '-O2', '-Wall', '-fPIC', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/libcudacxx', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/thrust', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/cub', '-I/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include', '-I/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/numpy/_core/include', '-c', '/tmp/tmpqluma6zx/a.cpp', '-o', '/tmp/tmpqluma6zx/tmp/tmpqluma6zx/a.o', '-std=c++17']' returned non-zero exit status 1.
-      **************************************************
-      
-      ************************************************************
-      * CuPy Configuration Summary                               *
-      ************************************************************
-      
-      Build Environment:
-        Include directories: ['/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/libcudacxx', '/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/thrust', '/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include/cupy/_cccl/cub', '/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/cupy/_core/include', '/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/numpy/_core/include']
-        Library directories: []
-        nvcc command       : (not found)
-        hipcc command      : (not found)
-      
-      Environment Variables:
-        CFLAGS          : (none)
-        LDFLAGS         : (none)
-        LIBRARY_PATH    : (none)
-        CUDA_PATH       : (none)
-        NVCC            : (none)
-        HIPCC           : (none)
-        ROCM_HOME       : (none)
-      
-      Modules:
-        cuda      : No
-          -> Include files not found: ['cublas_v2.h', 'cuda.h', 'cuda_profiler_api.h', 'cuda_runtime.h', 'cufft.h', 'curand.h', 'cusparse.h']
-          -> Check your CFLAGS environment variable.
-      
-      ERROR: CUDA could not be found on your system.
-      
-      HINT: You are trying to build CuPy from source, which is NOT recommended for general use.
-            Please consider using binary packages instead.
-      
-      Please refer to the Installation Guide for details:
-      https://docs.cupy.dev/en/stable/install.html
-      
-      ************************************************************
-      
-      Traceback (most recent call last):
-        File "/home/saad/Desktop/programs/slb/tmp/my_env/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
-          main()
-        File "/home/saad/Desktop/programs/slb/tmp/my_env/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
-          json_out['return_val'] = hook(**hook_input['kwargs'])
-                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/home/saad/Desktop/programs/slb/tmp/my_env/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 118, in get_requires_for_build_wheel
-          return hook(config_settings)
-                 ^^^^^^^^^^^^^^^^^^^^^
-        File "/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 333, in get_requires_for_build_wheel
-          return self._get_build_requires(config_settings, requirements=[])
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 301, in _get_build_requires
-          self.run_setup()
-        File "/tmp/pip-build-env-4jl1gj4v/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 317, in run_setup
-          exec(code, locals())  # noqa: S102 # exec is intentional here
-          ^^^^^^^^^^^^^^^^^^^^
-        File "<string>", line 56, in <module>
-        File "/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/install/cupy_builder/cupy_setup_build.py", line 560, in get_ext_modules
-          extensions = make_extensions(ctx, compiler, use_cython)
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        File "/tmp/pip-install-mkque4id/cupy_05c5342cdd9d4692b8f2a00f1381c8af/install/cupy_builder/cupy_setup_build.py", line 412, in make_extensions
-          raise Exception('Your CUDA environment is invalid. '
-      Exception: Your CUDA environment is invalid. Please check above error log.
-      [end of output]
-  
-  note: This error originates from a subprocess, and is likely not a problem with pip.
-error: subprocess-exited-with-error
-
-× Getting requirements to build wheel did not run successfully.
-│ exit code: 1
-╰─> See above for output.
-
-note: This error originates from a subprocess, and is likely not a problem with pip.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(my_env) saad@saad-Zenbook-UX3402ZA-UX3402ZA:~/Desktop/programs/slb/tmp$ lspci -k | grep -EA3 'VGA|3D|Display'
-00:02.0 VGA compatible controller: Intel Corporation Alder Lake-P GT2 [Iris Xe Graphics] (rev 0c)
-	DeviceName: Onboard - Video
-	Subsystem: ASUSTeK Computer Inc. Alder Lake-P GT2 [Iris Xe Graphics]
-	Kernel driver in use: i915
-(my_env) saad@saad-Zenbook-UX3402ZA-UX3402ZA:~/Desktop/programs/slb/tmp$ 
-
+ pip install porespy opencv-python scipy --dry-run --no-cache-dir --default-timeout=1000
+Collecting porespy
+  Downloading porespy-3.1.1-py3-none-any.whl.metadata (6.3 kB)
+Requirement already satisfied: opencv-python in ./my_env/lib/python3.12/site-packages (5.0.0.93)
+Collecting scipy
+  Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.4/62.4 kB 395.4 kB/s eta 0:00:00
+Collecting connected-components-3d (from porespy)
+  Downloading connected_components_3d-4.1.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (33 kB)
+Collecting dask (from porespy)
+  Downloading dask-2026.8.0-py3-none-any.whl.metadata (3.8 kB)
+Collecting deprecated (from porespy)
+  Downloading deprecated-1.3.1-py2.py3-none-any.whl.metadata (5.9 kB)
+Collecting edt<3.1 (from porespy)
+  Downloading edt-3.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (24 kB)
+Requirement already satisfied: matplotlib in ./my_env/lib/python3.12/site-packages (from porespy) (3.11.1)
+Collecting matplotlib-inline>=0.1.7 (from porespy)
+  Downloading matplotlib_inline-0.2.2-py3-none-any.whl.metadata (2.4 kB)
+Collecting numba (from porespy)
+  Downloading numba-0.67.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+Requirement already satisfied: numpy in ./my_env/lib/python3.12/site-packages (from porespy) (2.5.2)
+Requirement already satisfied: pandas in ./my_env/lib/python3.12/site-packages (from porespy) (3.0.5)
+Collecting psutil (from porespy)
+  Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Collecting pyevtk>=1.6.0 (from porespy)
+  Downloading pyevtk-1.7.0-py3-none-any.whl.metadata (6.1 kB)
+Requirement already satisfied: pyvista>=0.46.4 in ./my_env/lib/python3.12/site-packages (from porespy) (0.48.4)
+Requirement already satisfied: rich in ./my_env/lib/python3.12/site-packages (from porespy) (15.0.0)
+Collecting scikit-image>=0.25.0 (from porespy)
+  Downloading scikit_image-0.26.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (15 kB)
+Collecting setuptools (from porespy)
+  Downloading setuptools-84.0.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting tomli>=2.2.1 (from porespy)
+  Downloading tomli-2.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (10 kB)
+Collecting tqdm (from porespy)
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.4/57.4 kB 785.3 kB/s eta 0:00:00
+Collecting traitlets (from matplotlib-inline>=0.1.7->porespy)
+  Downloading traitlets-5.16.1-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: cyclopts>=4.0.0 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (4.23.3)
+Requirement already satisfied: pillow in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (12.3.0)
+Requirement already satisfied: pooch in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (1.9.0)
+Requirement already satisfied: scooby>=0.5.1 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (0.11.2)
+Requirement already satisfied: typing-extensions>=4.10 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (4.16.0)
+Requirement already satisfied: vtk!=9.4.0 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (9.6.2)
+Requirement already satisfied: contourpy>=1.0.1 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (1.3.3)
+Requirement already satisfied: cycler>=0.10 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (0.12.1)
+Requirement already satisfied: fonttools>=4.28.2 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (4.63.0)
+Requirement already satisfied: kiwisolver>=1.3.1 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (1.5.1)
+Requirement already satisfied: packaging>=20.0 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (26.3)
+Requirement already satisfied: pyparsing>=3 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (3.3.2)
+Requirement already satisfied: python-dateutil>=2.7 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (2.9.0.post0)
+Collecting networkx>=3.0 (from scikit-image>=0.25.0->porespy)
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting imageio!=2.35.0,>=2.33 (from scikit-image>=0.25.0->porespy)
+  Downloading imageio-2.37.4-py3-none-any.whl.metadata (9.6 kB)
+Requirement already satisfied: tifffile>=2022.8.12 in ./my_env/lib/python3.12/site-packages (from scikit-image>=0.25.0->porespy) (2026.8.23)
+Collecting lazy-loader>=0.4 (from scikit-image>=0.25.0->porespy)
+  Downloading lazy_loader-0.5-py3-none-any.whl.metadata (5.9 kB)
+Collecting click>=8.1 (from dask->porespy)
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting cloudpickle>=3.0.0 (from dask->porespy)
+  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting fsspec>=2021.09.0 (from dask->porespy)
+  Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+Collecting partd>=1.4.0 (from dask->porespy)
+  Downloading partd-1.4.2-py3-none-any.whl.metadata (4.6 kB)
+Collecting pyyaml>=5.4.1 (from dask->porespy)
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting toolz>=0.12.0 (from dask->porespy)
+  Downloading toolz-1.1.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting wrapt<3,>=1.10 (from deprecated->porespy)
+  Downloading wrapt-2.4.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.4 kB)
+Collecting llvmlite<0.50,>=0.49.0dev0 (from numba->porespy)
+  Downloading llvmlite-0.49.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.0 kB)
+Requirement already satisfied: markdown-it-py>=2.2.0 in ./my_env/lib/python3.12/site-packages (from rich->porespy) (4.2.0)
+Requirement already satisfied: pygments<3.0.0,>=2.13.0 in ./my_env/lib/python3.12/site-packages (from rich->porespy) (2.21.0)
+Requirement already satisfied: attrs>=23.1.0 in ./my_env/lib/python3.12/site-packages (from cyclopts>=4.0.0->pyvista>=0.46.4->porespy) (26.1.0)
+Requirement already satisfied: docstring-parser<4.0,>=0.15 in ./my_env/lib/python3.12/site-packages (from cyclopts>=4.0.0->pyvista>=0.46.4->porespy) (0.18.0)
+Requirement already satisfied: rich-rst<3.0.0,>=1.3.1 in ./my_env/lib/python3.12/site-packages (from cyclopts>=4.0.0->pyvista>=0.46.4->porespy) (2.1.0)
+Requirement already satisfied: mdurl~=0.1 in ./my_env/lib/python3.12/site-packages (from markdown-it-py>=2.2.0->rich->porespy) (0.1.2)
+Collecting locket (from partd>=1.4.0->dask->porespy)
+  Downloading locket-1.0.0-py2.py3-none-any.whl.metadata (2.8 kB)
+Requirement already satisfied: six>=1.5 in ./my_env/lib/python3.12/site-packages (from python-dateutil>=2.7->matplotlib->porespy) (1.17.0)
+Requirement already satisfied: platformdirs>=2.5.0 in ./my_env/lib/python3.12/site-packages (from pooch->pyvista>=0.46.4->porespy) (4.11.5)
+Requirement already satisfied: requests>=2.19.0 in ./my_env/lib/python3.12/site-packages (from pooch->pyvista>=0.46.4->porespy) (2.34.2)
+Requirement already satisfied: charset_normalizer<4,>=2 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (3.5.1)
+Requirement already satisfied: idna<4,>=2.5 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (3.19)
+Requirement already satisfied: urllib3<3,>=1.26 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (2.7.0)
+Requirement already satisfied: certifi>=2023.5.7 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (2026.7.22)
+Downloading porespy-3.1.1-py3-none-any.whl (243 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 243.0/243.0 kB 82.8 kB/s eta 0:00:00
+Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━ 19.3/35.3 MB 286.1 kB/s eta 0:00:57^Z
+[1]+  Stopped                 pip install porespy opencv-python scipy --dry-run --no-cache-dir --default-timeout=1000
+(my_env) saad@saad-Zenbook-UX3402ZA-UX3402ZA:~/Desktop/programs/slb/tmp$ pip install porespy opencv-python scipy --dry-run --no-cache-dir --default-timeout=1000
+Collecting porespy
+  Downloading porespy-3.1.1-py3-none-any.whl.metadata (6.3 kB)
+Requirement already satisfied: opencv-python in ./my_env/lib/python3.12/site-packages (5.0.0.93)
+Collecting scipy
+  Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.4/62.4 kB 29.8 kB/s eta 0:00:00
+Collecting connected-components-3d (from porespy)
+  Downloading connected_components_3d-4.1.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (33 kB)
+Collecting dask (from porespy)
+  Downloading dask-2026.8.0-py3-none-any.whl.metadata (3.8 kB)
+Collecting deprecated (from porespy)
+  Downloading deprecated-1.3.1-py2.py3-none-any.whl.metadata (5.9 kB)
+Collecting edt<3.1 (from porespy)
+  Downloading edt-3.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (24 kB)
+Requirement already satisfied: matplotlib in ./my_env/lib/python3.12/site-packages (from porespy) (3.11.1)
+Collecting matplotlib-inline>=0.1.7 (from porespy)
+  Downloading matplotlib_inline-0.2.2-py3-none-any.whl.metadata (2.4 kB)
+Collecting numba (from porespy)
+  Downloading numba-0.67.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+Requirement already satisfied: numpy in ./my_env/lib/python3.12/site-packages (from porespy) (2.5.2)
+Requirement already satisfied: pandas in ./my_env/lib/python3.12/site-packages (from porespy) (3.0.5)
+Collecting psutil (from porespy)
+  Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Collecting pyevtk>=1.6.0 (from porespy)
+  Downloading pyevtk-1.7.0-py3-none-any.whl.metadata (6.1 kB)
+Requirement already satisfied: pyvista>=0.46.4 in ./my_env/lib/python3.12/site-packages (from porespy) (0.48.4)
+Requirement already satisfied: rich in ./my_env/lib/python3.12/site-packages (from porespy) (15.0.0)
+Collecting scikit-image>=0.25.0 (from porespy)
+  Downloading scikit_image-0.26.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (15 kB)
+Collecting setuptools (from porespy)
+  Downloading setuptools-84.0.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting tomli>=2.2.1 (from porespy)
+  Downloading tomli-2.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (10 kB)
+Collecting tqdm (from porespy)
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.4/57.4 kB 131.1 kB/s eta 0:00:00
+Collecting traitlets (from matplotlib-inline>=0.1.7->porespy)
+  Downloading traitlets-5.16.1-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: cyclopts>=4.0.0 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (4.23.3)
+Requirement already satisfied: pillow in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (12.3.0)
+Requirement already satisfied: pooch in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (1.9.0)
+Requirement already satisfied: scooby>=0.5.1 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (0.11.2)
+Requirement already satisfied: typing-extensions>=4.10 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (4.16.0)
+Requirement already satisfied: vtk!=9.4.0 in ./my_env/lib/python3.12/site-packages (from pyvista>=0.46.4->porespy) (9.6.2)
+Requirement already satisfied: contourpy>=1.0.1 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (1.3.3)
+Requirement already satisfied: cycler>=0.10 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (0.12.1)
+Requirement already satisfied: fonttools>=4.28.2 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (4.63.0)
+Requirement already satisfied: kiwisolver>=1.3.1 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (1.5.1)
+Requirement already satisfied: packaging>=20.0 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (26.3)
+Requirement already satisfied: pyparsing>=3 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (3.3.2)
+Requirement already satisfied: python-dateutil>=2.7 in ./my_env/lib/python3.12/site-packages (from matplotlib->porespy) (2.9.0.post0)
+Collecting networkx>=3.0 (from scikit-image>=0.25.0->porespy)
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting imageio!=2.35.0,>=2.33 (from scikit-image>=0.25.0->porespy)
+  Downloading imageio-2.37.4-py3-none-any.whl.metadata (9.6 kB)
+Requirement already satisfied: tifffile>=2022.8.12 in ./my_env/lib/python3.12/site-packages (from scikit-image>=0.25.0->porespy) (2026.8.23)
+Collecting lazy-loader>=0.4 (from scikit-image>=0.25.0->porespy)
+  Downloading lazy_loader-0.5-py3-none-any.whl.metadata (5.9 kB)
+Collecting click>=8.1 (from dask->porespy)
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting cloudpickle>=3.0.0 (from dask->porespy)
+  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting fsspec>=2021.09.0 (from dask->porespy)
+  Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+Collecting partd>=1.4.0 (from dask->porespy)
+  Downloading partd-1.4.2-py3-none-any.whl.metadata (4.6 kB)
+Collecting pyyaml>=5.4.1 (from dask->porespy)
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting toolz>=0.12.0 (from dask->porespy)
+  Downloading toolz-1.1.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting wrapt<3,>=1.10 (from deprecated->porespy)
+  Downloading wrapt-2.4.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.4 kB)
+Collecting llvmlite<0.50,>=0.49.0dev0 (from numba->porespy)
+  Downloading llvmlite-0.49.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.0 kB)
+Requirement already satisfied: markdown-it-py>=2.2.0 in ./my_env/lib/python3.12/site-packages (from rich->porespy) (4.2.0)
+Requirement already satisfied: pygments<3.0.0,>=2.13.0 in ./my_env/lib/python3.12/site-packages (from rich->porespy) (2.21.0)
+Requirement already satisfied: attrs>=23.1.0 in ./my_env/lib/python3.12/site-packages (from cyclopts>=4.0.0->pyvista>=0.46.4->porespy) (26.1.0)
+Requirement already satisfied: docstring-parser<4.0,>=0.15 in ./my_env/lib/python3.12/site-packages (from cyclopts>=4.0.0->pyvista>=0.46.4->porespy) (0.18.0)
+Requirement already satisfied: rich-rst<3.0.0,>=1.3.1 in ./my_env/lib/python3.12/site-packages (from cyclopts>=4.0.0->pyvista>=0.46.4->porespy) (2.1.0)
+Requirement already satisfied: mdurl~=0.1 in ./my_env/lib/python3.12/site-packages (from markdown-it-py>=2.2.0->rich->porespy) (0.1.2)
+Collecting locket (from partd>=1.4.0->dask->porespy)
+  Downloading locket-1.0.0-py2.py3-none-any.whl.metadata (2.8 kB)
+Requirement already satisfied: six>=1.5 in ./my_env/lib/python3.12/site-packages (from python-dateutil>=2.7->matplotlib->porespy) (1.17.0)
+Requirement already satisfied: platformdirs>=2.5.0 in ./my_env/lib/python3.12/site-packages (from pooch->pyvista>=0.46.4->porespy) (4.11.5)
+Requirement already satisfied: requests>=2.19.0 in ./my_env/lib/python3.12/site-packages (from pooch->pyvista>=0.46.4->porespy) (2.34.2)
+Requirement already satisfied: charset_normalizer<4,>=2 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (3.5.1)
+Requirement already satisfied: idna<4,>=2.5 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (3.19)
+Requirement already satisfied: urllib3<3,>=1.26 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (2.7.0)
+Requirement already satisfied: certifi>=2023.5.7 in ./my_env/lib/python3.12/site-packages (from requests>=2.19.0->pooch->pyvista>=0.46.4->porespy) (2026.7.22)
+Downloading porespy-3.1.1-py3-none-any.whl (243 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 243.0/243.0 kB 99.6 kB/s eta 0:00:00
+Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 151.2 kB/s eta 0:00:00
+Downloading edt-3.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 153.1 kB/s eta 0:00:00
+Downloading matplotlib_inline-0.2.2-py3-none-any.whl (9.5 kB)
+Downloading pyevtk-1.7.0-py3-none-any.whl (20 kB)
+Downloading scikit_image-0.26.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (13.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.6/13.6 MB 157.0 kB/s eta 0:00:00
+Downloading tomli-2.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (253 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 253.3/253.3 kB 121.6 kB/s eta 0:00:00
+Downloading connected_components_3d-4.1.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (4.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.9/4.9 MB 164.3 kB/s eta 0:00:00
+Downloading dask-2026.8.0-py3-none-any.whl (1.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 167.3 kB/s eta 0:00:00
+Downloading deprecated-1.3.1-py2.py3-none-any.whl (11 kB)
+Downloading numba-0.67.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.9/3.9 MB 178.1 kB/s eta 0:00:00
+Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 155.6/155.6 kB 355.2 kB/s eta 0:00:00
+Downloading setuptools-84.0.0-py3-none-any.whl (818 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 818.2/818.2 kB 289.9 kB/s eta 0:00:00
+Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 598.8 kB/s eta 0:00:00
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.3/125.3 kB 282.2 kB/s eta 0:00:00
+Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Downloading fsspec-2026.7.0-py3-none-any.whl (206 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 206.6/206.6 kB 124.0 kB/s eta 0:00:00
+Downloading imageio-2.37.4-py3-none-any.whl (318 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 318.0/318.0 kB 208.5 kB/s eta 0:00:00
+Downloading lazy_loader-0.5-py3-none-any.whl (8.0 kB)
+Downloading llvmlite-0.49.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (59.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.9/59.9 MB 150.8 kB/s eta 0:00:00
+Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 146.2 kB/s eta 0:00:00
+Downloading partd-1.4.2-py3-none-any.whl (18 kB)
+Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 160.8 kB/s eta 0:00:00
+Downloading toolz-1.1.0-py3-none-any.whl (58 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.1/58.1 kB 381.5 kB/s eta 0:00:00
+Downloading wrapt-2.4.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (236 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 236.3/236.3 kB 104.4 kB/s eta 0:00:00
+Downloading traitlets-5.16.1-py3-none-any.whl (86 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.2/86.2 kB 192.6 kB/s eta 0:00:00
+Downloading locket-1.0.0-py2.py3-none-any.whl (4.4 kB)
+Would install Deprecated-1.3.1 ImageIO-2.37.4 PyYAML-6.0.3 click-8.5.0 cloudpickle-3.1.2 connected-components-3d-4.1.0 dask-2026.8.0 edt-3.0.0 fsspec-2026.7.0 lazy-loader-0.5 llvmlite-0.49.0 locket-1.0.0 matplotlib-inline-0.2.2 networkx-3.6.1 numba-0.67.0 partd-1.4.2 porespy-3.1.1 psutil-7.2.2 pyevtk-1.7.0 scikit-image-0.26.0 scipy-1.18.1 setuptools-84.0.0 tomli-2.4.1 toolz-1.1.0 tqdm-4.70.1 traitlets-5.16.1 wrapt-2.4.1

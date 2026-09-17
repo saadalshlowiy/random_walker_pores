@@ -1,2 +1,7 @@
 install another two libraries: opencv-python and cupy
 
+
+
+#pore-spy
+
+

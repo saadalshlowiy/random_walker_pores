@@ -60,3 +60,20 @@ but i understood it ..
         !!) does not do log()
         !!!) resolution = 0.1 ; walkers = 1000 ; constents out of loop ; if condition rather than break
         !!!!)
+
+<> Monday
+    <> doc was buzy , nothing today
+
+<> Tuesday
+    <> Include meta-data in plots & output txt
+    <> optimized the code , for we R reviewing it afternoon
+
+
+<> Thursday
+    <> He focused on visulizing the walkers Moving from one pore to another
+    <> viewing the overall pores , and place of walkers EVERY 4000 iteration/Or So
+    <> then we want to use DATA to determine the chance
+        a walker WOULD migrate
+        |---migration--|0.5|---NoMigrationg--|
+        0.5 is gonna be CONTROLED by meta-data
+        if it is 1.0 , then ALL walkers migrate !

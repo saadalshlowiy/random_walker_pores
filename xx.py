@@ -521,4 +521,20 @@ def display_walkers(walker_data=[]):
 z1 = np.ones((1,10)) * np.random.default_rng().random()
 z2 = np.ones((1,10)) * np.random.default_rng().random()
 
-help(np.random.default_rng().random)
+ddd ={
+    '1': 43 ,
+    'a' : 11 ,
+    'ree' : 432
+}
+print(sum(ddd.values()))
+del ddd['1']
+print(sum(ddd.values()))
+
+for i , v in ddd.items() :
+    print(i,v)
+xx = [32,43,1,10]
+
+a=np.ones((10,4)) * 5
+
+b=np.ones((10,4)) * 2
+print(a[a > 4])
