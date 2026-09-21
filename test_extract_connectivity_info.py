@@ -10,7 +10,7 @@ import scipy.sparse as sp
 # from precompiled_module import get_solid_array, local2global
 
 folder_path = "images"
-file_name = "TwoPoreSystem_50_50_0p2um_shift_5.tif"
+file_name = "ThreePoreSystem_20_50_20_0p2um_shift_5.tif"
 # file_name = "MultiPoreSystem_50_50_50_50_50_50_50_0p2um_shift_5.tif"
 file_path = os.path.join(folder_path, file_name)
 # ***** initialize image
@@ -72,20 +72,7 @@ data[:, 2] = pore_volume[coords[:, 1]]             # adjacent pore volume
 # block_size = np.array(_local.shape, dtype=np.int64)[:, np.newaxis]
 # solid_index = local2global(_local, 0, 0, 0, block_size, 1, dims)
 #print("done")
-
-# if there is 5 differen pores , we return 5 !
-def get_total_number_of_different_pores():
-    total_number_of_all_values_with_grain = len(np.unique(label_mask))
-    number_of_values_of_only_pores = total_number_of_all_values_with_grain - 1
-    return number_of_values_of_only_pores
-
-
-
-def get_the_values_of_each_pore():
-    return np.unique(label_mask)[1:]
-
-
-def get_full_array(folder_path = "images" , file_name="TwoPoreSystem_50_50_0p2um_shift_5.tif"):
+def base(folder_path,file_name):
     file_path = os.path.join(folder_path, file_name)
     tf, image_list = cv2.imreadmulti(file_path, flags=0)
     bw = np.array(image_list, dtype=np.uint8).transpose((0,2,1))
@@ -93,4 +80,21 @@ def get_full_array(folder_path = "images" , file_name="TwoPoreSystem_50_50_0p2um
     bw = bw[*slices]
     snow = ps.networks.snow2(bw, voxel_size=1, boundary_width=0)
     label_mask = snow.regions
+    return label_mask
+# if there is 5 differen pores , we return 5 !
+def get_total_number_of_different_pores(folder_path,file_name):
+    label_mask = base(folder_path,file_name)
+    total_number_of_all_values_with_grain = len(np.unique(label_mask))
+    number_of_values_of_only_pores = total_number_of_all_values_with_grain - 1
+    return number_of_values_of_only_pores
+
+
+
+def get_the_values_of_each_pore():
+    label_mask = base(folder_path,file_name)
+    return np.unique(label_mask)[1:]
+
+
+def get_full_array(folder_path = "images" , file_name="TwoPoreSystem_50_50_0p2um_shift_5.tif"):
+    label_mask = base(folder_path,file_name)
     return label_mask

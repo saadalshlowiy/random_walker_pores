@@ -518,23 +518,13 @@ def display_walkers(walker_data=[]):
 #print(round(np.ones(4)*9.43258920000 , 3))
 #w = np.ones((13 , 4))
 #print(f"w:{w[:4]}\nWr{w[:,0][:4]}\nnewW{ w[:,0][:4] + (0.1 * np.sin(0.3) * np.cos(0.23))}")
-z1 = np.ones((1,10)) * np.random.default_rng().random()
-z2 = np.ones((1,10)) * np.random.default_rng().random()
-
-ddd ={
-    '1': 43 ,
-    'a' : 11 ,
-    'ree' : 432
-}
-print(sum(ddd.values()))
-del ddd['1']
-print(sum(ddd.values()))
-
-for i , v in ddd.items() :
-    print(i,v)
-xx = [32,43,1,10]
-
-a=np.ones((10,4)) * 5
-
-b=np.ones((10,4)) * 2
-print(a[a > 4])
+z1 =  np.random.default_rng().integers(low=0 , high=120, size=1000)
+z2 =  np.random.default_rng().integers(low=0 , high=120, size=1000)
+z3 =  ( np.random.default_rng().random(z1.shape) < 0.7 ).astype(np.int16)
+# print(f"z1\n{z1[:8]}\nz1[z3]{z1[z3==1][:8]}\nz3:{z3[:8]}")
+# plt.figure();plt.scatter(z1,z2.T);plt.show(block=False);plt.pause(1.2);plt.close()
+# plt.scatter(z1,z2) 
+''' fjdaj '''
+x = "jfdkslnv_0p2um"
+r= x.find("0p")
+print(x[r+2])

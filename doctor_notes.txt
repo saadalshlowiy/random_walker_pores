@@ -71,9 +71,22 @@ but i understood it ..
 
 <> Thursday
     <> He focused on visulizing the walkers Moving from one pore to another
-    <> viewing the overall pores , and place of walkers EVERY 4000 iteration/Or So
+       viewing the overall pores , and place of walkers EVERY 4000 iteration/Or So
+       SHould I color the walkers ? each walker in a pore has a
+       color ... USA -|- RUSSIAN -|- CHINESS
+
     <> then we want to use DATA to determine the chance
         a walker WOULD migrate
         |---migration--|0.5|---NoMigrationg--|
         0.5 is gonna be CONTROLED by meta-data
         if it is 1.0 , then ALL walkers migrate !
+    <> Its 4:37PM , I feal i wanna go out , but I will work till i finish some tasks
+
+
+<> SUNDAY REPORT :
+
+    I did visualization for walkers
+    tryied to control their migration  , but there is bug at
+    line 140 in diff__.py
+
+<>

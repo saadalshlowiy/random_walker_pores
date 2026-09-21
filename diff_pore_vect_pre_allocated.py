@@ -16,12 +16,53 @@ surface_relaxivity = 20  # micro-meter/second
 RADIUS = 50 # pixcels given from doctor
 RADIUS_IN_MICRO_METERS = RADIUS * RESOLUTION
 
+pore_value_to_color ={
+        '1' : 'black' ,
+        '2' : 'red' ,
+        '3' : 'green' ,
+        '4' : 'blue' ,
+        '5' : 'purple' ,
+        '6' : 'yellow' ,
+        '7' : 'orange'
+}
+
+
 
 def calculate_increment_time(step_distance ,fluid_diffusion_coefficient ):
 
     delta_t = (step_distance * step_distance) / (6 * fluid_diffusion_coefficient)
     #print(f"\ncalcuting Delta T --> {delta_t}")
     return delta_t
+def plot_all_walkers(walker_data, iteration , time , fraction , acceptance_rate , number_of_immagrants ):
+    '''
+    Input: walker data [(r,c,z,is_alive)......]
+    Take Only r , c and use scatter()
+    '''
+    array_of_pore_values = (np.unique(walker_data[: , 4])).astype(np.int16)
+
+    # print(f"x\n{x[:4]}\ny\n{y[:4]}")
+    plt.figure(figsize=(12,10))
+    plt.title(f"{iteration} Iterations\n{time:.5f} current Time\n{fraction:.5f} Magnatization\nAcceptance Rate: {acceptance_rate*100}%\n{number_of_immagrants} immagrents")
+
+    is_alive = (walker_data[: , 3]).astype(np.int16)#;print(f"is_alive is\n{is_alive}")
+    mask = is_alive == 1
+    x = walker_data[mask][: , 0]
+    y = walker_data[mask][: , 1]
+    for value in array_of_pore_values: # assuming value is string
+        color = pore_value_to_color[str(value)]
+        mask_for_this_pore_value = walker_data[mask][: , 4] == value
+
+        plt.scatter(x[mask_for_this_pore_value],y[mask_for_this_pore_value], color = color, s = 2 , alpha = 0.42 )
+
+
+
+    plt.xlabel("X-axis");plt.ylabel("Y-axis")
+    if iteration > 8000 and np.random.default_rng().random() > 0.6  :
+        os.system(f"mkdir walker_scatter_plot_figures ;cd walker_scatter_plot_figures")
+        plt.savefig(f"walker_scatter_plot_figures/{iteration}_iterations_{fraction}_fraction.png")
+    plt.show(block = False)
+    plt.pause(1.8)
+    plt.close()
 
 def surface_relaxation_for_simulation(p_t):
 
@@ -79,7 +120,7 @@ def get_indexes_of_pore_from_3D_array(array , representation_value_of_pore):
     '''--> [ (r , c , z , Value) ... ] '''
     lz = len(array) ; lr = len(array[0]) ; lc = len(array[0][0])
     # print(f"lz|lr|lc-->{lz}|{lr}|{lc}"); time.sleep(2)
-
+    # x=0
     for z in range(lz):
         for r in range(lr):
             for c in range(lc):
@@ -95,20 +136,72 @@ def get_indexes_of_pore_from_3D_array(array , representation_value_of_pore):
 import time
 def get_value_of_index(full_array , index):
     r , c , z = index.T[0] , index.T[1] , index.T[2]
-
+    #print(f"r|c|z have shape of {r.shape}|{c.shape}|{z.shape}")
+    #print(f"full_array[z,r,c] -->\n{np.unique(full_array[z , r , c])}")
+    #time.sleep(5)
     return full_array[z , r , c]
 
-def get_number_of_walkers_migrated(full_array , new_position , old_position):
+def get_number_of_walkers_migrated(full_array , new_position , old_position , acceptance_rate):
     #print(f"newp->\n{new_position[:3]}\noldp->\n{old_position[:3]}")
-    v1 = get_value_of_index(full_array , new_position) # has less valid walkers , as some might got in grain !
-    #print(f"new-->\n{v1}")
-    v2 = get_value_of_index(full_array , old_position)
-    v2[v1 == 0 ] = 0
-    ''' V2 > V1  soo we reduce '''
-    #print(f"old-->\n{v2}\n\n new : {len(v1)}\nold:{len(v2)}");time.sleep(2)
-    c = np.sum((v1[v1 > 0] != v2[v2 > 0] ).astype(np.int16))
-    # print(f"Number Of Migrations --> {c}")
-    return c
+    new_coordinate = get_value_of_index(full_array , new_position) # has less valid walkers , as some might got in grain !
+    #print(f"new-->\n{new_coordinate}")
+    old_coordinate = get_value_of_index(full_array , old_position)
+
+    # print(f"shape of new_index | old_index --> {new_position.shape} | {old_position.shape} ")
+    # shape of new_index | old_index --> (3500, 3) | (3500, 3)
+    mask_for_walkers_not_in_grain = new_coordinate != 0
+
+
+    #print(f"old-->\n{old_coordinate}\n\n new : {len(new_coordinate)}\nold:{len(old_coordinate)}");time.sleep(2)
+    number_of_illegal_immigration = np.sum((new_coordinate[mask_for_walkers_not_in_grain] != old_coordinate[mask_for_walkers_not_in_grain] ).astype(np.int16))
+    # print(f"Mask for Imigrants --> { (new_coordinate[mask_for_walkers_not_in_grain] != old_coordinate[mask_for_walkers_not_in_grain]).shape }")
+    #  Mask for Imigrants --> (3168,)
+
+    # print(f"new{np.unique(new_coordinate[:])} | old{np.unique(old_coordinate[:])}")
+
+    ''' we found the bug ! '''
+    #new[0 1] | old[1]
+
+    mask_for_walkers_that_migrated = new_coordinate[mask_for_walkers_not_in_grain] != old_coordinate[mask_for_walkers_not_in_grain]
+    # print(f"migration mask\n{mask_for_walkers_that_migrated[:5] }") ; time.sleep(1)
+    # migration array
+    # [False False False False]
+    #   w1     w2    w3   w4
+    # Thus if walker has TRUE , then he went to another PORE TYPE
+    #if number_of_illegal_immigration != len(mask_for_walkers_that_migrated == True):
+    #    print(f"N != len(array)")
+    '''
+    if NOT allowed to migrate , we need to return to their prev position
+    new_position = [ (x,y,z) (x,y,z) (x,y,z) ]
+    mask_migrated= [  false    true    true  ]
+    disallow_migr= [    X      true     false] --> F: allow migration
+    '''
+    random_array = np.random.default_rng().random(size = number_of_illegal_immigration )
+
+    disallow_migration_mask = random_array > acceptance_rate # this will result in True False
+    prevented = np.sum(disallow_migration_mask.astype(np.int16))
+    # print(f"\n\nOld Position is\n{old_position[mask_for_walkers_not_in_grain][mask_for_walkers_that_migrated]}\nnew_position migrated are\n{new_position[mask_for_walkers_not_in_grain][mask_for_walkers_that_migrated]}")
+    #   Old Position is
+    #   [[59 51 47]]
+    #   new_position migrated are
+    #   [[59 52 46]]
+    prevented_walkers_mask = np.zeros(len(new_position), dtype=bool)
+    if prevented >= 1:
+        valid_indices = np.flatnonzero(mask_for_walkers_not_in_grain)
+
+        migrated_indices = valid_indices[mask_for_walkers_that_migrated]
+
+        prevented_indices = migrated_indices[disallow_migration_mask]
+
+        new_position[prevented_indices] = old_position[prevented_indices]
+
+        prevented_walkers_mask[prevented_indices] = True
+
+        # print(f"we Prevented {prevented} from migrating !\nnewPosition\n{new_position[mask_for_walkers_not_in_grain][mask_for_walkers_that_migrated]}")
+        # print(f"disallowed{disallow_migration_mask.shape}")
+        # print(f"the updated position in new walker is-->\n{new_position[mask_for_walkers_not_in_grain][mask_for_walkers_that_migrated][disallow_migration_mask]}")
+    # time.sleep(0.8)
+    return number_of_illegal_immigration - prevented , new_position , prevented_walkers_mask
 
 
 def convert_index_to_mid_point_position(index , resolution):
@@ -133,20 +226,22 @@ def get_initiated_walkers(full_array,representation_value_of_pore,resolution,num
 
     # time.sleep(4)
     # number_of_walkers = 1000
-    walker_data = np.zeros( ( number_of_walkers , 4 ) , dtype = np.float64 )
+    walker_data = np.zeros( ( number_of_walkers , 5 ) , dtype = np.float64 )
 
     '''
     NOW WE DETERMINE NUMBER OF WALKER , BUT IF WE WANT OTHERWISE , THEN WE MOD THE CODE !!
     '''
 
+    # THIS IS working as we want it to #
     for i in range(number_of_walkers):
         # this masteriously converted the indexes INSIDE TO STR ?!!?
-        index = np.int16(pores_indexes[i][:-1])
+        # print(f"index {pores_indexes[i][:3]} ")
+        index = np.int16(pores_indexes[i][:3])
         # print(f"index to be converted is\n{type(index[0])}");time.sleep(2) # we will get the first pore's pixcel , then second ..
         # 2 we calculate the MIDDLE POSITION OF THIS PORE (4 , 5 , 8) --> (4.5 , 5.5 , 8.5)
         position_for_uninitialized_walker = convert_index_to_mid_point_position(index , resolution) + (1,)  # so now it is like this (x , y , z , is_alive=1)
-        #print(f"we converted {index} to {position_for_uninitialized_walker} for walker[{i}]")
-        walker_data[i] = position_for_uninitialized_walker
+        # print(f"we converted {index} to {position_for_uninitialized_walker} for walker[{i}]") ; time.sleep(0.4)
+        walker_data[i] = position_for_uninitialized_walker + (representation_value_of_pore,)
 
     return walker_data
 
@@ -219,15 +314,9 @@ def calculate_the_volume_of_the_given_sphere_image(full_array,representation_val
     number_of_pore_voxels = len(get_indexes_of_pore_from_3D_array(full_array , representation_value_of_pore))
     volumn_of_one_pore_voxels = resolution * resolution * resolution
     volumn_of_all_pore_voxels = volumn_of_one_pore_voxels * number_of_pore_voxels
-
-    print(f"\n=======\nVolumen of sphere is --> {volumn_of_all_pore_voxels}\n")
-    #time.sleep(1.1)
     return volumn_of_all_pore_voxels
 
-#   0       0 -> 1
-#   1       1 -> 2
-#   2       2 -> 3
-#   3
+
 def calculate_the_surface_area_of_the_sphere(full_array , resolution ):
     all_z_dimentions_last_n_minus_1 = full_array[1: , : , :]
     all_z_dimentions_first_n_minus_1 = full_array[:-1 , : , :]
@@ -249,18 +338,24 @@ def calculate_the_surface_area_of_the_sphere(full_array , resolution ):
     #time.sleep(0.2)
     return surface_area_of_all_pores_facing_grains
 import re
+
+
+
+# /home/saad/Desktop/programs/slb/tmp/images/ThreePoreSystem_20_50_20_0p2um_shift_5.tif
+
 def semi_semi_main(   iterations = 600):
     # get the image , and store it in np_array
-    file_name="TwoPoreSystem_50_50_0p2um_shift_5.tif"
+    file_name="ThreePoreSystem_20_50_20_0p2um_shift_5.tif"
     values_in_file_name = re.findall(r"_(\d+)(?:p(\d+))?" , file_name)
     #    [('50', ''), ('50', ''), ('0', '2'), ('5', '')]
     number_of_voxels_in_the_radius  = int(values_in_file_name[0][0])
-    resolution = int(values_in_file_name[2][1]) / 10
-    radius_in_micro_meters  = number_of_voxels_in_the_radius * resolution
-    full_array                      = yiteng.get_full_array(file_name="TwoPoreSystem_50_50_0p2um_shift_5.tif")
-    total_number_of_different_pores = yiteng.get_total_number_of_different_pores()
+    resolution = int(file_name[file_name.find("0p") + 2]) / 10
+    radius_in_micro_meters          = number_of_voxels_in_the_radius * resolution
+    ''' ^|^   this is used for Analytical Calculation'''
+    full_array                      = yiteng.get_full_array(file_name=file_name)
+    total_number_of_different_pores = yiteng.get_total_number_of_different_pores(folder_path = "images", file_name=file_name)
     values_of_each_pore             = yiteng.get_the_values_of_each_pore()
-    step_distance = resolution  * 1
+    step_distance = resolution  *  1
     print(f"we have {total_number_of_different_pores} number of different pores.\nThey are::->\n{values_of_each_pore}")
     print(f"(2)Resolution -> {resolution}");print(f"(3)step_distance -> {step_distance}");print(f"(4)fluid_diffusion_coefficient -> {fluid_diffusion_coefficient} micro_meter^2/sec");print(f"(5)surface_relaxivity -> {surface_relaxivity} micro_meter/sec");print(f"(6)radius -> {number_of_voxels_in_the_radius} voxels")
 
@@ -270,28 +365,44 @@ def semi_semi_main(   iterations = 600):
     the pores that we are gonna use
     '''
 
-
-    pore_type_to_walker_amount = {
-        '1' : 3500 , # pore_1 -> 1000 walkers
-        '2' : 0
-    }
-    # {   1 : np.array()   2 : np.array()     3 : np.array()   }
+    # {   '1' : np.array()   '2' : np.array()     '3' : np.array()   }
     indexes_of_pores_dataset = get_index_of_each_pore_type(full_array,total_number_of_different_pores,values_of_each_pore)
-    number_of_walkers = sum(pore_type_to_walker_amount.values())
 
+    all_walkers_in_one_type_pore = False
+
+    if all_walkers_in_one_type_pore:
+        pore_type_to_walker_amount = {
+            '1' : 3500 , # pore_1 -> 3500 walkers
+            '2' : 0 ,
+            '3' : 0
+        }
+    else :
+        di = len(indexes_of_pores_dataset)
+        total_number_of_walker = 10000
+        pore_type_to_walker_amount = {
+        '1' : 1500 , # pore_1 -> 3500 walkers
+        '2' : 2000
+        }
+        for pore_value in indexes_of_pores_dataset :
+            pore_type_to_walker_amount[pore_value] = total_number_of_walker // di
+    print(f"pores<-->walkers\n{pore_type_to_walker_amount}"); time.sleep(1.4)
+    number_of_walkers = sum(pore_type_to_walker_amount.values())
     walker_data = get_initiated_walkers(full_array ,'1' , resolution , pore_type_to_walker_amount['1'] )
     # if we have OTHER PORE TYPES , we ADD more walkers !
     del pore_type_to_walker_amount['1']
-
+    # print(f"walkers data is \n{walker_data[:4]}");time.sleep(4.2)
     if sum(pore_type_to_walker_amount.values()) >= 1 :
         print("Other Pores Will have Walkers in them..");time.sleep(1)
         for pore_type , walker_amount in pore_type_to_walker_amount.items() :
             temp = get_initiated_walkers(full_array , pore_type , resolution , walker_amount)
+            # print(f"walkers data is \n{walker_data[-4:-1]}\nporeType {pore_type}\nAmount of walkers {walker_amount}");time.sleep(4.2)
             walker_data = np.vstack((walker_data , temp))
+        # print(f"walkers data is \n{walker_data[:4]}");time.sleep(1.2)
     else:
         print("Other Pores Will |- NOT -| have Walkers in them..");time.sleep(1)
     # print(f"shape of walker_data after vstacking is\n{walker_data.shape}")
     # time.sleep(4.2)
+
     representation_value_of_grain = 0
 
     seed = 99
@@ -324,6 +435,7 @@ def semi_semi_main(   iterations = 600):
         c = walker_data[:, 1]
         z = walker_data[:, 2]
         is_alive = walker_data[:, 3]
+
         # walker_data[: , :3 ]
         # theta  = np.ones(len(walker_data))  # [ th , th , th ... th ]
         # beta   = np.ones(len(walker_data))  # [ be , be , be ... be
@@ -341,9 +453,14 @@ def semi_semi_main(   iterations = 600):
 
         converted_to_index_new_walker_data = convert_position_to_index( new_walker_data , resolution  )  # from POSITION --> Index
         converted_to_index_old_walker_data = convert_position_to_index( walker_data[: , :3 ] , resolution )
-
-        walkers_migrated += get_number_of_walkers_migrated(full_array , converted_to_index_new_walker_data , converted_to_index_old_walker_data )
-
+        acceptance_rate = 0.0
+        # HERE WE prevent migration .. thus Update on NewWalkerData ..
+        walkers_migrated, converted_to_index_new_walker_data  , prevented_walkers_mask  = get_number_of_walkers_migrated(full_array , converted_to_index_new_walker_data , converted_to_index_old_walker_data  , acceptance_rate)
+        ''' do this func() again ! '''
+        # walkers who are not allowed to pass , shall return to their origianl positions
+        nr[prevented_walkers_mask] = r[prevented_walkers_mask]
+        nc[prevented_walkers_mask] = c[prevented_walkers_mask]
+        nz[prevented_walkers_mask] = z[prevented_walkers_mask]
         converted_to_index_new_walker_data = np.column_stack((converted_to_index_new_walker_data , is_alive))
         # print(f"converted to index new walker \n{converted_to_index_new_walker_data[:3]}")
         # time.sleep(5)
@@ -362,6 +479,7 @@ def semi_semi_main(   iterations = 600):
         c[collided == 0] = nc[collided == 0]
         z[collided == 0] = nz[collided == 0]
         ## IF THERE IS COLLISION AND DEAD , THEN is_alive=0
+
         number_of_walker_before_killing = np.sum(is_alive)
         is_alive[(is_dead == 1) & (collided == 1)] = 0  # here we KILL
         number_of_walkers_after_killing = np.sum(is_alive)
@@ -385,6 +503,9 @@ def semi_semi_main(   iterations = 600):
         c = 1 + (iterations // 4500)
         if jj % ( c if c > 2 else 2 )  == 0 :
             print(f"{jj}|| T:{t} || F:{fraction} || iteration time: {bbb - aaa} || diff : {true_fraction - fraction}")
+            if np.random.default_rng().random() > 0.95 :
+                # print(f"walker_data AFTER Update-->\n{walker_data[:4]}");time.sleep(2)
+                plot_all_walkers(walker_data , jj , t , fraction , acceptance_rate , number_of_immagrants=walkers_migrated )
 
             # is_alive = 1 :: for being alive      is_alive = 0 for being dead
 
@@ -400,34 +521,7 @@ def semi_semi_main(   iterations = 600):
 
     return (p_fraction, coordinates , end - start , walkers_migrated )
 
-#this is the stairs spher
-# the killings were too high , which means only two things ::
-# A. Killing probability is too high
 
-#or
-
-#B. Walkers encounter the surface too frequently
-# so I looked into this more
-# I studied the digital sphera ... cause the analytical was wanting a perfect
-# smooth sphere , meaning the surface is sooo smooth .. and thus
-# the equation is built on that
-# but i wanted to know if digital sphere , had the same smooth surface ,
-# that i can find with surface area , and compare
-# surface area of digital , with theoritcal surface area that the equation wants
-# The digital sphere had a larger surface area , with S = {} and S/V =
-# the theritical sphere has S = 1256.64 and S/V = 0.30
-#
-# To future more make sure that the logic used is accurate , we
-# are going to change the logic for COLLIDE , we will detect a
-# collision if the walker goes outside the RADIUS
-#000001111100000
-#000111111110000
-#001111111111000
-#011111111111100
-#011111111111100
-#001111111111000
-#000111111110000
-#000001111100000
 
 def print_all_coordinations(p_t , coordinates):
     x_s = p_t.T[1]
@@ -452,9 +546,9 @@ if LOG , then change LOTS of things '''
 def main():
     final_time = 0.000005
     factor = 1
-    while(final_time < 2) :
+    while(final_time < 2):
 
-        iterations = 16000 * factor
+        iterations = 400000 * factor
         #for boost_number in boost_number_list :
         (p_fraction, coordinates , total_time , walkers_migrated ) = semi_semi_main(   iterations)
         final_time = p_fraction[-1][1]
@@ -471,7 +565,7 @@ def main():
                    plt.xlabel("Time Duration")
                    plt.ylabel("scale of magnetization")
                    plt.tight_layout()
-                   plt.savefig(f"Figures_Vectorized/iterations_{iterations}_migration/iterations_is{iterations}_walkers_is3500_res_0p2.png" , dpi = 500 , transparent = False )
+                   # plt.savefig(f"Figures_Vectorized/iterations_{iterations}_migration/iterations_is{iterations}_walkers_is3500_res_0p2.png" , dpi = 500 , transparent = False )
                    plt.show(block=False)
                    plt.pause(6.6)
                    plt.close() # to clear out memory
