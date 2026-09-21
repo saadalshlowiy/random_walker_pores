@@ -90,7 +90,7 @@ def get_total_number_of_different_pores(folder_path,file_name):
 
 
 
-def get_the_values_of_each_pore():
+def get_the_values_of_each_pore(folder_path , file_name):
     label_mask = base(folder_path,file_name)
     return np.unique(label_mask)[1:]
 

@@ -308,6 +308,7 @@ def get_index_of_each_pore_type(full_array,total_number_of_different_pores,value
     index_of_each_pore = {} # pore_1 : np.array([----])
     for i in range(total_number_of_different_pores):
         # print(f"value of pore --> {values_of_each_pore[i]} checking..")
+        # print(f"number of different types of pores --> {total_number_of_different_pores}\nValue of pore --> {values_of_each_pore[i]}\n")
         index_of_each_pore[str(i+1)] = get_indexes_of_pore_from_3D_array(full_array, values_of_each_pore[i])
     return index_of_each_pore
 def calculate_the_volume_of_the_given_sphere_image(full_array,representation_value_of_pore  , resolution):
@@ -346,6 +347,8 @@ import re
 def semi_semi_main(   iterations = 600):
     # get the image , and store it in np_array
     file_name="ThreePoreSystem_20_50_20_0p2um_shift_5.tif"
+    file_name="MultiPoreSystem_20_20_20_50_20_20_20_0p2um_shift_5.tif"
+    file_name="TwoPoreSystem_50_20_0p2um_shift_3.tif"
     values_in_file_name = re.findall(r"_(\d+)(?:p(\d+))?" , file_name)
     #    [('50', ''), ('50', ''), ('0', '2'), ('5', '')]
     number_of_voxels_in_the_radius  = int(values_in_file_name[0][0])
@@ -354,7 +357,7 @@ def semi_semi_main(   iterations = 600):
     ''' ^|^   this is used for Analytical Calculation'''
     full_array                      = yiteng.get_full_array(file_name=file_name)
     total_number_of_different_pores = yiteng.get_total_number_of_different_pores(folder_path = "images", file_name=file_name)
-    values_of_each_pore             = yiteng.get_the_values_of_each_pore()
+    values_of_each_pore             = yiteng.get_the_values_of_each_pore(folder_path = "images" , file_name=file_name)
     step_distance = resolution  *  1
     print(f"we have {total_number_of_different_pores} number of different pores.\nThey are::->\n{values_of_each_pore}")
     print(f"(2)Resolution -> {resolution}");print(f"(3)step_distance -> {step_distance}");print(f"(4)fluid_diffusion_coefficient -> {fluid_diffusion_coefficient} micro_meter^2/sec");print(f"(5)surface_relaxivity -> {surface_relaxivity} micro_meter/sec");print(f"(6)radius -> {number_of_voxels_in_the_radius} voxels")
@@ -378,7 +381,7 @@ def semi_semi_main(   iterations = 600):
         }
     else :
         di = len(indexes_of_pores_dataset)
-        total_number_of_walker = 10000
+        total_number_of_walker = 30000
         pore_type_to_walker_amount = {
         '1' : 1500 , # pore_1 -> 3500 walkers
         '2' : 2000
@@ -453,7 +456,7 @@ def semi_semi_main(   iterations = 600):
 
         converted_to_index_new_walker_data = convert_position_to_index( new_walker_data , resolution  )  # from POSITION --> Index
         converted_to_index_old_walker_data = convert_position_to_index( walker_data[: , :3 ] , resolution )
-        acceptance_rate = 0.0
+        acceptance_rate = 0.5
         # HERE WE prevent migration .. thus Update on NewWalkerData ..
         walkers_migrated, converted_to_index_new_walker_data  , prevented_walkers_mask  = get_number_of_walkers_migrated(full_array , converted_to_index_new_walker_data , converted_to_index_old_walker_data  , acceptance_rate)
         ''' do this func() again ! '''
